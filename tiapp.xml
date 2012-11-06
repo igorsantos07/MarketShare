@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ti:app xmlns:ti="http://ti.appcelerator.org">
+    <property name="acs-oauth-secret-production" type="string">xPUCG9M8vAUBtTyXcB4PTcwzZgIdqvKI</property>
+    <property name="acs-oauth-key-production" type="string">itv9lYkyM9ZqNTaRHeiLKfqdyVxF3naM</property>
+    <property name="acs-api-key-production" type="string">FjR8e9GL7SEOnLRaB82ANiyWeFhu9FnY</property>
+    <property name="acs-oauth-secret-development" type="string">dmt8VLddXjbZhVkiaCpLzrxafl6ywA5m</property>
+    <property name="acs-oauth-key-development" type="string">g89Ed5TPX0qVT7kvrpfE2oQ3U37Omn6r</property>
+    <property name="acs-api-key-development" type="string">ijC3pfQLkIzs9u5I9d0mCDHRnzaNGxCa</property>
+    <deployment-targets>
+        <target device="mobileweb">true</target>
+        <target device="iphone">false</target>
+        <target device="ipad">false</target>
+        <target device="android">true</target>
+        <target device="blackberry">false</target>
+    </deployment-targets>
+    <sdk-version>2.1.3.GA</sdk-version>
+    <id>com.igorsantos07.marketshare</id>
+    <name>MarketShare</name>
+    <version>1.0</version>
+    <publisher>igoru</publisher>
+    <url>http://www.igorsantos.com.br</url>
+    <description>not specified</description>
+    <copyright>2012 by Igor Santos</copyright>
+    <icon>appicon.png</icon>
+    <persistent-wifi>false</persistent-wifi>
+    <prerendered-icon>false</prerendered-icon>
+    <statusbar-style>default</statusbar-style>
+    <statusbar-hidden>false</statusbar-hidden>
+    <fullscreen>false</fullscreen>
+    <navbar-hidden>false</navbar-hidden>
+    <analytics>true</analytics>
+    <guid>d82adf4e-b118-42fe-a289-b806f1927b87</guid>
+    <property name="ti.ui.defaultunit">system</property>
+    <iphone>
+        <orientations device="iphone">
+            <orientation>Ti.UI.PORTRAIT</orientation>
+        </orientations>
+        <orientations device="ipad">
+            <orientation>Ti.UI.PORTRAIT</orientation>
+            <orientation>Ti.UI.UPSIDE_PORTRAIT</orientation>
+            <orientation>Ti.UI.LANDSCAPE_LEFT</orientation>
+            <orientation>Ti.UI.LANDSCAPE_RIGHT</orientation>
+        </orientations>
+    </iphone>
+    <android xmlns:android="http://schemas.android.com/apk/res/android"/>
+    <mobileweb>
+        <precache/>
+        <splash>
+            <enabled>true</enabled>
+            <inline-css-images>true</inline-css-images>
+        </splash>
+        <theme>default</theme>
+    </mobileweb>
+    <modules/>
+</ti:app>
