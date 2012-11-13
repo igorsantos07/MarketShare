@@ -3,6 +3,11 @@
     <style name="LightTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <!-- Any customizations for your app running on pre-3.0 devices here -->
     </style>
+    
+    <style name="LightDarkTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <!-- Any customizations for your app running on pre-3.0 devices here -->
+    </style>
+    
     <style name="DarkTheme" parent="@android:style/Theme.NoTitleBar">
         <!-- Any customizations for your app running on pre-3.0 devices here -->
     </style>

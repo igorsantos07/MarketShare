@@ -3,6 +3,11 @@
     <style name="LightTheme" parent="@android:style/Theme.Holo.Light">
         <!-- Any customizations for your app running on 3.0+ devices here -->
     </style>
+    
+    <style name="LightDarkTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <!-- Any customizations for your app running on 3.0+ devices here -->
+    </style>
+    
     <style name="DarkTheme" parent="@android:style/Theme.Holo">
         <!-- Any customizations for your app running on 3.0+ devices here -->
     </style>
