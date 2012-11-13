@@ -1,7 +1,33 @@
 var _ = require('lib/underscore-1.4.2')._
 
 var darkGray = '#4A4542',
-	gray = '#B5B6B5'
+	gray = '#B5B6B5' 
+
+exports.createWindow = function(titleid, properties) {
+	return Ti.UI.createWindow(_.extend(properties, {titleid: titleid}))
+}
+
+exports.createSimpleWindow = function(titleid, properties) {
+	return exports.createWindow(titleid, _.defaults(properties || {}, {
+		backgroundColor: 'lightgray',
+		navBarHidden: true
+	}))
+}
+
+exports.createTabWindow = function(titleid, icon, properties) {
+	var win = exports.createWindow(titleid, _.defaults(properties || {}, {
+		backgroundColor: 'black',
+		navBarHidden: false
+	}))
+	
+	win.containingTab = Ti.UI.createTab({
+		titleid: titleid,
+		//icon: icon,
+		window: win
+	})
+
+	return win
+}
 
 exports.createTextField = function(properties) {
 	return Ti.UI.createTextField(_.defaults(properties, {
