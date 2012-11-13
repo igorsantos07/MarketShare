@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-	<string name="loginWindow">MarketShare - Login</string>
+	<string name="appName">MarketShare</string>
+	
+	<string name="loginWindow">Please login</string>
 		<string name="email">E-mail</string>
 		<string name="password">Password</string>
 		<string name="login">Login</string>
-		<string name="neverUsed">Never used before?\nCreate a new account here</string>
+		<string name="neverUsed">Never used before?\nCreate a new account here ▶</string>
 		<string name="newAccount">New User</string>
 		
 	<string name="listsTab">My lists</string>

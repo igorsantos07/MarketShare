@@ -1,41 +1,22 @@
 module.exports = function() {
 	var ui = require("ui/common/components/defaults"),
-		spacing = 10
+		spacing = 10,
+		lightGray = '#8A8785'
 	
-	var win = ui.createSimpleWindow('loginWindow')
+	var win = ui.createWindow('loginWindow', { navBarHidden: false })
 	
-		var loginBox = Ti.UI.createScrollView({
-			width: '80%',
-			layout: 'vertical'
-		})
-		
-			loginBox.add(Ti.UI.createImageView({
-				top: spacing,
-				image: '/images/logo-big.png',
-			}))
+	var container = Ti.UI.createScrollView()
+		var loginBox = Ti.UI.createView({ width: '80%', layout: 'vertical' })
 			
-			var email = ui.createFieldLabel({
-				textid: 'email',
-				top: spacing,
-				color: 'black'
-			})
+			var email = ui.createTextField({ keyboardType: Ti.UI.KEYBOARD_EMAIL })
+			loginBox.add(ui.createFieldLabel({ textid: 'email', top: spacing * 2 }))
 			loginBox.add(email)
 			
-			loginBox.add(ui.createTextField({
-				keyboardType: Ti.UI.KEYBOARD_EMAIL
-			}))
-			
-			var password = ui.createFieldLabel({
-				textid: 'password',
-				top: spacing
-			})
+			var password = ui.createTextField({ passwordMask: true })
+			loginBox.add(ui.createFieldLabel({ textid: 'password', top: spacing }))
 			loginBox.add(password)
 			
-			loginBox.add(ui.createTextField({
-				passwordMask: true
-			}))
-		
-			btnLogin = ui.createButton({
+			var btnLogin = ui.createButton({
 				top: 20,
 				width: '100%',
 				titleid: 'login'
@@ -44,8 +25,9 @@ module.exports = function() {
 			
 			var newAccountBox = Ti.UI.createView({
 				layout: 'horizontal',
-				top: 20,
-				right: 0
+				top: 30,
+				right: 0,
+				bottom: 30
 			})
 			
 				newAccountBox.add(ui.createLabel({
@@ -53,17 +35,21 @@ module.exports = function() {
 					width: '45%',
 					right: 10,
 					textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
+					color: lightGray,
 					font: { fontSize: 13 }
 				}))
 				
-				btnNew = ui.createButton({
-					width: '50%',
-					titleid: 'newAccount',
-				})
+				var btnNew = ui.createButton({ width: '50%', titleid: 'newAccount' })
 				newAccountBox.add(btnNew)
 				
 			loginBox.add(newAccountBox)
-		win.add(loginBox)
+		container.add(loginBox)
+	win.add(container)
+
+	btnNew.addEventListener('click', function(e) {
+		var newAccount = new require('ui/common/windows/initial/newAccount')()
+		newAccount.open()
+	})
 	
 	return win
 }
