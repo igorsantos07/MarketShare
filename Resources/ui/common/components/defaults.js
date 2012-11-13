@@ -4,7 +4,9 @@ var darkGray = '#4A4542',
 	gray = '#B5B6B5' 
 
 exports.createWindow = function(titleid, properties) {
-	return Ti.UI.createWindow(_.extend(properties, {titleid: titleid}))
+	return Ti.UI.createWindow(_.extend(properties || {}, {
+		titleid: titleid
+	}))
 }
 
 exports.createSimpleWindow = function(titleid, properties) {
@@ -20,6 +22,9 @@ exports.createTabWindow = function(titleid, icon, properties) {
 		navBarHidden: false
 	}))
 	
+	/*
+	 * TODO: we should add icon support here for old androids and iphone
+	 */
 	win.containingTab = Ti.UI.createTab({
 		titleid: titleid,
 		//icon: icon,
@@ -29,8 +34,26 @@ exports.createTabWindow = function(titleid, icon, properties) {
 	return win
 }
 
+exports.createTableView = function(properties) {
+	return Ti.UI.createTableView(_.defaults(properties || {}, {
+		backgroundColor: 'transparent'
+	}))
+}
+
+exports.createTableViewRow = function(properties) {
+	return Ti.UI.createTableViewRow(_.defaults(properties || {}, {
+		
+	}))
+}
+
+exports.createTableViewSection = function(properties) {
+	return Ti.UI.createTableSection(_.defaults(properties || {}, {
+		
+	}))
+}
+
 exports.createTextField = function(properties) {
-	return Ti.UI.createTextField(_.defaults(properties, {
+	return Ti.UI.createTextField(_.defaults(properties || {}, {
 		width: '100%',
 		backgroundColor: 'white',
 		color: darkGray,
@@ -42,7 +65,7 @@ exports.createTextField = function(properties) {
 }
 
 exports.createLabel = function(properties) {
-	return Ti.UI.createLabel(_.defaults(properties, {
+	return Ti.UI.createLabel(_.defaults(properties || {}, {
 		width: '100%',
 		color: darkGray,
 		textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT
@@ -50,13 +73,13 @@ exports.createLabel = function(properties) {
 }
 
 exports.createFieldLabel = function(properties) {
-	return exports.createLabel(_.defaults(properties, {
+	return exports.createLabel(_.defaults(properties || {}, {
 		font: { fontSize: 16 }
 	}))	
 }
 
 exports.createButton = function(properties) {
-	return Ti.UI.createButton(_.defaults(properties, {
+	return Ti.UI.createButton(_.defaults(properties || {}, {
 		borderRadius: 10,
 		color: darkGray,
 		backgroundColor: gray
