@@ -7,5 +7,12 @@
 		<string name="neverUsed">Never used before?\nCreate a new account here</string>
 		<string name="newAccount">New User</string>
 		
-		
+	<string name="listsTab">My lists</string>
+	
+	
+	<string name="groupsTab">My groups</string>
+	
+	
+	<string name="settingsTab">Settings</string>
+
 </resources>
