@@ -14,7 +14,8 @@
 		<string name="newList">New List</string>
 	
 	<string name="groupsTab">My groups</string>
-	
+		<string name="newGroup">New Group</string>
+		<string name="joinGroup">Join Group</string>
 	
 	<string name="settingsTab">Settings</string>
 

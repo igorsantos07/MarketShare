@@ -11,5 +11,19 @@ module.exports = function() {
 		
 		win.add(table)
 		
+		/**
+		 * TODO: Not working, looks like the TabGroup is the only activity, instead of each tab being one
+		 */
+		ui.setMenu(win, [
+			{
+				titleid: 'newGroup',
+				click: function(e) { alert('should add a new group') }
+			},
+			{
+				titleid: 'joinGroup',
+				click: function(e) { alert('should join another group') }
+			}
+		])
+		
 	return win
 }
