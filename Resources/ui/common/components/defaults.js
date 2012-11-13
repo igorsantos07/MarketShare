@@ -46,10 +46,15 @@ exports.createTableViewRow = function(properties) {
 	}))
 }
 
-exports.createTableViewSection = function(properties) {
-	return Ti.UI.createTableSection(_.defaults(properties || {}, {
+exports.createTableViewSection = function(titleid, properties) {
+	return Ti.UI.createTableViewSection(
+		_.defaults(
+			_.extend(properties || {}, { headerTitle: L(titleid) }),
+			{
 		
-	}))
+			}
+		)
+	)
 }
 
 exports.createTextField = function(properties) {
