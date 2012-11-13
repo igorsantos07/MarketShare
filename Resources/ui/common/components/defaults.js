@@ -3,6 +3,8 @@ var _ = require('lib/underscore-1.4.2')._
 var darkGray = '#4A4542',
 	gray = '#B5B6B5' 
 
+/********************************************* WINDOW STUFF *********************************************/
+
 exports.createWindow = function(titleid, properties) {
 	return Ti.UI.createWindow(_.extend(properties || {}, {
 		titleid: titleid
@@ -34,6 +36,8 @@ exports.createTabWindow = function(titleid, icon, properties) {
 	return win
 }
 
+/********************************************* TABLE STUFF *********************************************/
+
 exports.createTableView = function(properties) {
 	return Ti.UI.createTableView(_.defaults(properties || {}, {
 		backgroundColor: 'transparent'
@@ -56,6 +60,8 @@ exports.createTableViewSection = function(titleid, properties) {
 		)
 	)
 }
+
+/********************************************* FORM STUFF *********************************************/
 
 exports.createTextField = function(properties) {
 	return Ti.UI.createTextField(_.defaults(properties || {}, {
