@@ -1,5 +1,5 @@
 module.exports = function() {
-	var ui = require("ui/common/components/defaults")
+	var ui = require("ui/common/components/all")
 	var tabGroup = Ti.UI.createTabGroup()
 	
 	var tabLists = new require('ui/common/windows/main/lists')()

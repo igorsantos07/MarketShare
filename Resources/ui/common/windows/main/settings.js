@@ -1,5 +1,5 @@
 module.exports = function() {
-	var ui = require("ui/common/components/defaults"),
+	var ui = require("ui/common/components/all"),
 		spacing = 10
 	
 	var win = ui.createTabWindow('settingsTab', { layout: "vertical" })
