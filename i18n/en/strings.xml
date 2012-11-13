@@ -9,6 +9,11 @@
 		<string name="neverUsed">Never used before?\nCreate a new account here ▶</string>
 		<string name="newAccount">New User</string>
 		
+	<string name="newAccountWindow">New account</string>
+		<string name="name">Name</string>
+		<string name="confirmPassword">Confirm Password</string>
+		<string name="createLogin">Create &amp; Login</string>
+		
 	<string name="listsTab">My lists</string>
 		<string name="openLists">Open Lists</string>
 		<string name="pendingLists">Pending Payment Lists</string>

@@ -3,7 +3,7 @@ module.exports = function() {
 		spacing = 10,
 		lightGray = '#8A8785'
 	
-	var win = ui.createWindow('loginWindow', { navBarHidden: false })
+	var win = ui.createWindow('loginWindow', { navBarHidden: false, exitOnClose: true })
 	
 	var container = Ti.UI.createScrollView()
 		var loginBox = Ti.UI.createView({ width: '80%', layout: 'vertical' })
@@ -17,7 +17,7 @@ module.exports = function() {
 			loginBox.add(password)
 			
 			var btnLogin = ui.createButton({
-				top: 20,
+				top: spacing * 2,
 				width: '100%',
 				titleid: 'login'
 			})
@@ -25,15 +25,15 @@ module.exports = function() {
 			
 			var newAccountBox = Ti.UI.createView({
 				layout: 'horizontal',
-				top: 30,
+				top: spacing * 3,
 				right: 0,
-				bottom: 30
+				bottom: spacing * 3
 			})
 			
 				newAccountBox.add(ui.createLabel({
 					textid: 'neverUsed',
 					width: '45%',
-					right: 10,
+					right: spacing,
 					textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
 					color: lightGray,
 					font: { fontSize: 13 }
@@ -47,8 +47,18 @@ module.exports = function() {
 	win.add(container)
 
 	btnNew.addEventListener('click', function(e) {
-		var newAccount = new require('ui/common/windows/initial/newAccount')()
+		var newAccount = new require('ui/common/windows/initial/newAccount')(win)
 		newAccount.open()
+	})
+	
+	btnLogin.addEventListener('click', function(e) {
+		win.fireEvent('login', { email: email.value, password: password.value })
+	})
+	
+	win.addEventListener('login', function(credentials) {
+		alert('User: '+credentials.email+'\n'+'Password: '+credentials.password)
+		var home = new require('ui/common/windows/main/home')()
+		home.open()
 	})
 	
 	return win
