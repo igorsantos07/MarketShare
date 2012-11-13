@@ -2,7 +2,8 @@ module.exports = function() {
 	var ui = require("ui/common/components/defaults")
 	
 	var win = ui.createTabWindow('listsTab')
-	
+
+		//adding fake table
 		var openLists		= ui.createTableViewSection('openLists'),
 			pendingLists	= ui.createTableViewSection('pendingLists'),
 			archivedLists	= ui.createTableViewSection('archivedLists')
@@ -21,6 +22,14 @@ module.exports = function() {
 			archivedLists.add(ui.createTableViewRow({ title: "Arrival shopping" }))
 			
 		win.add(ui.createTableView({ data: [openLists, pendingLists, archivedLists] }))
+		
+		//adding menu
+		ui.setMenu(win, [
+			{
+				titleid: 'newList',
+				click: function(e) { alert('should add a new list') }
+			}
+		])
 		
 	return win
 }
