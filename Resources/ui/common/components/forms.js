@@ -1,32 +1,38 @@
-var _ = require('lib/underscore-1.4.2')._
-
-var darkerGray = '#212021',
-	darkGray = '#4A4542',
-	gray = '#B5B6B5' 
+var _ = require('lib/underscore-1.4.2')._,
+	color = require('ui/common/components/colors'),
+	android = (Titanium.Platform.name == 'android'),
+	iOS = (Titanium.Platform.name == 'iphone' || Titanium.Platform.name == 'ipad')
 
 exports.createTextField = function(properties) {
-	return Ti.UI.createTextField(_.defaults(properties || {}, {
+	var defaultValues = {
 		width: '100%',
-		backgroundColor: darkerGray,
-		//color: darkGray,
+		backgroundColor: color.field.bg,
+		color: color.field.color
+	}
+	
+	if (iOS) {
+		_.extend(defaultValues, {
 		//borderColor: darkGray,
-		//borderStyle: Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
+		borderStyle: Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
 		//borderRadius: 10,
 		//borderWidth: 1
-	}))	
+		})
+	}
+	
+	return Ti.UI.createTextField(_.defaults(properties || {}, defaultValues))	
 }
 
 exports.createLabel = function(properties) {
 	return Ti.UI.createLabel(_.defaults(properties || {}, {
 		width: '100%',
-		color: darkGray,
+		color: color.text,
 		textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT
 	}))	
 }
 
 exports.createFieldLabel = function(properties) {
 	return exports.createLabel(_.defaults(properties || {}, {
-		color: 'white',
+		color: color.label,
 		font: { fontSize: 16 }
 	}))	
 }
