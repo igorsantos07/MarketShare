@@ -12,6 +12,13 @@ exports.createWindow = function(titleid, properties) {
 	)
 }
 
+exports.createMainWindow = function(titleid, properties) {
+	return exports.createWindow(titleid, _.defaults(properties || {}, {
+		exitOnClose: true,
+		navBarHidden: false
+	}))
+}
+
 exports.createTabWindow = function(titleid, icon, properties) {
 	var win = exports.createWindow(titleid, _.defaults(properties || {}, {
 
