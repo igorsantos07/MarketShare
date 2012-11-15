@@ -1,18 +1,14 @@
 module.exports = function() {
-	var ui = require("ui/common/components/all")
+	var ui = require("ui/common/components/all"),
+		_ = require('lib/underscore-1.4.2')._
+	
 	var tabGroup = Ti.UI.createTabGroup()
-	
-	var tabLists = require('ui/common/windows/main/lists')()
-	tabLists.containingTab.tabGroup = tabGroup
-	tabGroup.addTab(tabLists.containingTab)
-	
-	var tabGroups = require('ui/common/windows/main/groups')()
-	tabGroups.containingTab.tabGroup = tabGroup
-	tabGroup.addTab(tabGroups.containingTab)
-	
-	var tabSettings = require('ui/common/windows/main/settings')()
-	tabSettings.containingTab.tabGroup = tabGroup
-	tabGroup.addTab(tabSettings.containingTab)
+
+	_.each(['lists', 'groups', 'settings'], function(tabName) {
+		var tab = require('ui/common/windows/main/'+tabName)()
+		tab.containingTab.tabGroup = tabGroup
+		tabGroup.addTab(tab.containingTab)
+	})	
 	
 	tabGroup.setActiveTab(0)
 	
