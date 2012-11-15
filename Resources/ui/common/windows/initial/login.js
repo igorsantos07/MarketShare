@@ -26,20 +26,24 @@ module.exports = function() {
 			var newAccountBox = Ti.UI.createView({
 				layout: 'horizontal',
 				top: spacing * 3,
-				right: 0,
-				bottom: spacing * 3
+				right: 0
 			})
 			
 				newAccountBox.add(ui.createLabel({
 					textid: 'neverUsed',
-					width: '45%',
-					right: spacing,
+					width: '55%',
+					right: '5%',
 					textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
 					color: lightGray,
 					font: { fontSize: 13 }
 				}))
 				
-				var btnNew = ui.createButton({ width: '50%', titleid: 'newAccount' })
+				var btnNew = ui.createButton({
+					titleid: 'newAccount',
+					width: '40%',
+					right: 0,
+					font: { fontSize: 13 }
+				})
 				newAccountBox.add(btnNew)
 				
 			loginBox.add(newAccountBox)
