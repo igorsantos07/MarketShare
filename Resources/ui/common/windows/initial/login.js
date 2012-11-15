@@ -3,7 +3,7 @@ module.exports = function() {
 		spacing = 10,
 		lightGray = '#8A8785'
 	
-	var win = ui.createWindow('loginWindow', { navBarHidden: false, exitOnClose: true })
+	var win = ui.createMainWindow('loginWindow')
 	
 	var container = Ti.UI.createScrollView()
 		var loginBox = Ti.UI.createView({ width: '80%', layout: 'vertical' })
