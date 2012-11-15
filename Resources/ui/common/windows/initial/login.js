@@ -51,7 +51,7 @@ module.exports = function() {
 	win.add(container)
 
 	btnNew.addEventListener('click', function(e) {
-		var newAccount = new require('ui/common/windows/initial/newAccount')(win)
+		var newAccount = require('ui/common/windows/initial/newAccount')(win)
 		newAccount.open()
 	})
 	
@@ -61,7 +61,7 @@ module.exports = function() {
 	
 	win.addEventListener('login', function(credentials) {
 		alert('User: '+credentials.email+'\n'+'Password: '+credentials.password)
-		var home = new require('ui/common/windows/main/home')()
+		var home = require('ui/common/windows/main/home')()
 		home.open()
 	})
 	
