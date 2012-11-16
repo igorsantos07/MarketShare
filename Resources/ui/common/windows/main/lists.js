@@ -35,14 +35,14 @@ module.exports = function() {
 				itemId: 2,
 				titleid: 'groupsWindow',
 				icon: 'images/icons/groups.png',
-				//hidden:true,
+				hidden:true,
 				click: function(e) { alert('should go to groups') }
 			},
 			{
 				itemId: 3,
 				titleid: 'settingsWindow',
 				icon: Ti.Android.R.drawable.ic_menu_preferences,
-				//hidden: true,
+				hidden: true,
 				click: function(e) { alert('should open prefs') }
 			}
 		])

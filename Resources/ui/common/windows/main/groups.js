@@ -28,14 +28,14 @@ module.exports = function() {
 				itemId: 3,
 				titleid: 'listsWindow',
 				icon: 'images/icons/lists.png',
-				//hidden: true,
+				hidden: true,
 				click: function(e) { alert('should go to lists') }
 			},
 			{
 				itemId: 4,
 				titleid: 'settingsWindow',
 				icon: Ti.Android.R.drawable.ic_menu_preferences,
-				//hidden: true,
+				hidden: true,
 				click: function(e) { alert('should open prefs') }
 			}
 		])
