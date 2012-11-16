@@ -14,16 +14,21 @@ module.exports = function() {
 		/**
 		 * TODO: Not working, looks like the TabGroup is the only activity, instead of each tab being one
 		 */
-		ui.setMenu(win, [
+		win.menu = [
 			{
+				itemId: 1,
 				titleid: 'newGroup',
+				icon: Ti.Android.R.drawable.ic_menu_add,
 				click: function(e) { alert('should add a new group') }
 			},
 			{
+				itemId: 2,
 				titleid: 'joinGroup',
+				icon: 'images/icons/join.png',
 				click: function(e) { alert('should join another group') }
 			}
-		])
+		]
+		
 		
 	return win
 }

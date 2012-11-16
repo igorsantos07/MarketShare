@@ -24,12 +24,15 @@ module.exports = function() {
 		win.add(ui.createTableView({ data: [openLists, pendingLists, archivedLists] }))
 		
 		//adding menu
-		ui.setMenu(win, [
+		win.menu = [
 			{
+				itemId: 1,
 				titleid: 'newList',
+				icon: Ti.Android.R.drawable.ic_menu_add,
 				click: function(e) { alert('should add a new list') }
 			}
-		])
+		]
+		
 		
 	return win
 }
