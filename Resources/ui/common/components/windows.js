@@ -1,6 +1,6 @@
 var _ = require('lib/underscore-1.4.2')._,
 	color = require('ui/common/components/colors')
-	
+
 exports.createWindow = function(titleid, properties) {
 	return Ti.UI.createWindow(
 		_.defaults(
@@ -34,6 +34,10 @@ exports.createTabWindow = function(titleid, icon, properties) {
 	return win
 }
 
+/*
+ * FIXME: showAsAction cannot be defined in the items dictionary; it doesn't get set for some odd reason
+ * TODO: item.hidden is adding the item to the old menu, not in the collapsible button 
+ */
 /**
  * @param win the window to receive the menu items
  * @param menuItems an array of menu objects. Each object can have the following properties:
@@ -44,13 +48,17 @@ exports.createTabWindow = function(titleid, icon, properties) {
 exports.setMenu = function(win, items) {
 	if (Titanium.Platform.name == 'android') {
 		win.activity.onCreateOptionsMenu = function(e) {
-			var menu = e.menu
-			for(i in items) {
-				var item = items[i],
-					entry = menu.add({ title: L(item.titleid) })
-				if (item.icon != undefined) entry.setIcon(item.icon)
+			_.each(items, function(item) {
+				var entry = e.menu.add({
+					showAsAction: item.hidden? Ti.Android.SHOW_AS_ACTION_NEVER : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
+					itemId: item.itemId || Math.floor(Math.random()*1001), //making sure that every item has an ID
+					title: L(item.titleid)
+				})
+				
+				if (item.icon != undefined)	entry.setIcon(item.icon)
+
 				entry.addEventListener('click', item.click);
-			}
+			})
 		}
 	}
 }

@@ -11,5 +11,22 @@ module.exports = function() {
 	})
 	win.add(logout)
 	
+	ui.setMenu(win, [
+		{
+			itemId: 1,
+			titleid: 'listsWindow',
+			icon: 'images/icons/lists.png',
+			//hidden: true,
+			click: function(e) { alert('should go to lists') }
+		},
+		{
+			itemId: 2,
+			titleid: 'groupsWindow',
+			icon: 'images/icons/groups.png',
+			//hidden: true,
+			click: function(e) { alert('should go to groups') }
+		}
+	])
+	
 	return win
 }

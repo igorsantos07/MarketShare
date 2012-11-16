@@ -14,16 +14,16 @@
 		<string name="confirmPassword">Confirm Password</string>
 		<string name="createLogin">Create &amp; Login</string>
 		
-	<string name="listsTab">My lists</string>
+	<string name="listsWindow">Shopping lists</string>
 		<string name="openLists">Open Lists</string>
 		<string name="pendingLists">Pending Payment Lists</string>
 		<string name="archivedLists">Archived Lists</string>
 		<string name="newList">New List</string>
 	
-	<string name="groupsTab">My groups</string>
+	<string name="groupsWindow">My groups</string>
 		<string name="newGroup">New Group</string>
 		<string name="joinGroup">Join Group</string>
 	
-	<string name="settingsTab">Settings</string>
+	<string name="settingsWindow">Settings</string>
 
 </resources>

@@ -1,7 +1,7 @@
 module.exports = function() {
 	var ui = require("ui/common/components/all")
 	
-	var win = ui.createTabWindow('listsTab')
+	var win = ui.createMainWindow('listsWindow')
 
 		//adding fake table
 		var openLists		= ui.createTableViewSection('openLists'),
@@ -24,15 +24,28 @@ module.exports = function() {
 		win.add(ui.createTableView({ data: [openLists, pendingLists, archivedLists] }))
 		
 		//adding menu
-		win.menu = [
+		ui.setMenu(win, [
 			{
 				itemId: 1,
 				titleid: 'newList',
 				icon: Ti.Android.R.drawable.ic_menu_add,
 				click: function(e) { alert('should add a new list') }
+			},
+			{
+				itemId: 2,
+				titleid: 'groupsWindow',
+				icon: 'images/icons/groups.png',
+				//hidden:true,
+				click: function(e) { alert('should go to groups') }
+			},
+			{
+				itemId: 3,
+				titleid: 'settingsWindow',
+				icon: Ti.Android.R.drawable.ic_menu_preferences,
+				//hidden: true,
+				click: function(e) { alert('should open prefs') }
 			}
-		]
-		
+		])
 		
 	return win
 }

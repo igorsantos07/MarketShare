@@ -11,24 +11,34 @@ module.exports = function() {
 		
 		win.add(table)
 		
-		/**
-		 * TODO: Not working, looks like the TabGroup is the only activity, instead of each tab being one
-		 */
-		win.menu = [
+		ui.setMenu(win, [
 			{
 				itemId: 1,
+				titleid: 'joinGroup',
+				icon: 'images/icons/join.png',
+				click: function(e) { alert('should join a group') }
+			},
+			{
+				itemId: 2,
 				titleid: 'newGroup',
 				icon: Ti.Android.R.drawable.ic_menu_add,
 				click: function(e) { alert('should add a new group') }
 			},
 			{
-				itemId: 2,
-				titleid: 'joinGroup',
-				icon: 'images/icons/join.png',
-				click: function(e) { alert('should join another group') }
+				itemId: 3,
+				titleid: 'listsWindow',
+				icon: 'images/icons/lists.png',
+				//hidden: true,
+				click: function(e) { alert('should go to lists') }
+			},
+			{
+				itemId: 4,
+				titleid: 'settingsWindow',
+				icon: Ti.Android.R.drawable.ic_menu_preferences,
+				//hidden: true,
+				click: function(e) { alert('should open prefs') }
 			}
-		]
-		
+		])
 		
 	return win
 }
