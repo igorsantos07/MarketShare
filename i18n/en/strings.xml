@@ -2,6 +2,8 @@
 <resources>
 	<string name="appName">MarketShare</string>
 	<string name="save">Save</string>
+	<string name="go">Go</string>
+	<string name="search">Search</string>
 	
 	<string name="loginWindow">Please login</string>
 		<string name="email">E-mail</string>
@@ -25,6 +27,9 @@
 		<string name="newGroup">New Group</string>
 		<string name="joinGroup">Join Group</string>
 		<string name="createJoin">Create &amp; Join</string>
+		<string name="searchFor">Search for:</string>
+		<string name="foundGroups">Found groups</string>
+		<string name="noGroupFound">No group was found :(</string>
 	
 	<string name="settingsWindow">Settings</string>
 
