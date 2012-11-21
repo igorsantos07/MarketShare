@@ -61,7 +61,7 @@ module.exports = function() {
 	
 	win.addEventListener('login', function(credentials) {
 		alert('User: '+credentials.email+'\n'+'Password: '+credentials.password)
-		var home = require('ui/common/windows/main/home')()
+		var home = require('ui/common/windows/main/lists')()
 		home.open()
 	})
 	
