@@ -29,7 +29,7 @@ module.exports = function() {
 				itemId: 1,
 				titleid: 'newList',
 				icon: Ti.Android.R.drawable.ic_menu_add,
-				click: function(e) { ui.goTo('main/listNew') }
+				click: function(e) { ui.goTo('main/listOpen') }
 			},
 			{
 				itemId: 2,
