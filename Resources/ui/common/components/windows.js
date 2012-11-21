@@ -62,3 +62,9 @@ exports.setMenu = function(win, items) {
 		}
 	}
 }
+
+exports.goTo = function(windowName) {
+	win = require('ui/common/windows/'+windowName)()
+	win.open()
+	return win
+}

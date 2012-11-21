@@ -29,21 +29,21 @@ module.exports = function() {
 				itemId: 1,
 				titleid: 'newList',
 				icon: Ti.Android.R.drawable.ic_menu_add,
-				click: function(e) { alert('should add a new list') }
+				click: function(e) { ui.goTo('main/listNew') }
 			},
 			{
 				itemId: 2,
 				titleid: 'groupsWindow',
 				icon: 'images/icons/groups.png',
 				hidden:true,
-				click: function(e) { alert('should go to groups') }
+				click: function(e) { ui.goTo('main/groups') }
 			},
 			{
 				itemId: 3,
 				titleid: 'settingsWindow',
 				icon: Ti.Android.R.drawable.ic_menu_preferences,
 				hidden: true,
-				click: function(e) { alert('should open prefs') }
+				click: function(e) { ui.goTo('main/settings') }
 			}
 		])
 		
