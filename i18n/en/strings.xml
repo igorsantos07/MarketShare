@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
 	<string name="appName">MarketShare</string>
+	<string name="save">Save</string>
 	
 	<string name="loginWindow">Please login</string>
 		<string name="email">E-mail</string>
@@ -23,6 +24,7 @@
 	<string name="groupsWindow">My groups</string>
 		<string name="newGroup">New Group</string>
 		<string name="joinGroup">Join Group</string>
+		<string name="createJoin">Create &amp; Join</string>
 	
 	<string name="settingsWindow">Settings</string>
 
