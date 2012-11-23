@@ -1,0 +1,3 @@
+[submodule "Resources/config"]
+	path = Resources/config
+	url = ssh://git@bitbucket.org/santos_dal/marketshare-private.git
