@@ -20,8 +20,15 @@ module.exports = function() {
 			},
 			{
 				itemId: 2,
+				titleid: 'newItem',
+				icon: Ti.Android.R.drawable.ic_menu_add,
+				click: function(e) { ui.goTo('main/listNewItem') }
+			},
+			{
+				itemId: 3,
 				titleid: 'newGroup',
 				icon: Ti.Android.R.drawable.ic_menu_delete,
+				hidden: true,
 				click: function(e) { 
 					var confirm = Ti.UI.createAlertDialog({
 						titleid: 'sure',
