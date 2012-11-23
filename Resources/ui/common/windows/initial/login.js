@@ -1,7 +1,8 @@
 module.exports = function() {
 	var ui = require("ui/common/components/all"),
+		_ = require('lib/underscore-1.4.2')._,
 		spacing = 10,
-		lightGray = '#8A8785'
+		User = require('models/User')
 	
 	var win = ui.createMainWindow('loginWindow')
 	
@@ -34,7 +35,7 @@ module.exports = function() {
 					width: '55%',
 					right: '5%',
 					textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT,
-					color: lightGray,
+					color: ui.color.text,
 					font: { fontSize: 13 }
 				}))
 				
@@ -60,9 +61,17 @@ module.exports = function() {
 	})
 	
 	win.addEventListener('login', function(credentials) {
-		alert('User: '+credentials.email+'\n'+'Password: '+credentials.password)
-		var home = require('ui/common/windows/main/lists')()
-		home.open()
+		var user = new User()
+		user.find({ email: email.value, password: Ti.Utils.md5HexDigest(password.value) }, function(user) {
+            if (user) {
+                //TODO: should save the user ID into an app property (in the file system)
+                var home = require('ui/common/windows/main/lists')()
+                home.open()
+            }
+            else {
+                alert(L('invalidLogin'))
+            }
+		})
 	})
 	
 	return win
