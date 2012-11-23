@@ -8,4 +8,3 @@ for (i in parts) {
 }
 
 exports.color = require('ui/common/components/colors')
-alert(exports.color.label)
