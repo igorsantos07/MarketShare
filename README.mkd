@@ -1,9 +1,13 @@
 # MarketShare
 
 ## Dependencies documentation
+* Titanium SDK 3.0
+    * [API][ti3]
+    * [Installation][TI-CI-Install]
 * [MongoLab API][mongo]
-* [Underscore.js][underscore]
-* [Date.js][date]
+* External libs
+    * [Underscore.js][underscore]
+    * [Date.js][date]
 
 ## License and stuff
 
@@ -18,6 +22,8 @@ trademarks of Appcelerator, Inc.
 
 * Date.js is released under the MIT License. It's under the `licenses` folder too
 
+[ti3]:http://docs.appcelerator.com/titanium/3.0/#!/api/
+[TI-CI-Install]:https://wiki.appcelerator.org/display/guides/Installing+Titanium+SDK+Continuous+Builds
 [mongo]:http://support.mongolab.com/entries/20433053-rest-api-for-mongodb
 [underscore]:http://underscorejs.org
 [date]:http://code.google.com/p/datejs/wiki/APIDocumentation
