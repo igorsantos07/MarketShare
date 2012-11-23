@@ -12,6 +12,7 @@ switch (Titanium.Platform.name) {
 	case 'android':
 		color = {
 			bg: black,
+			bgOp: gray,
 			label: white,
 			text: darkGray,
 			field: {
@@ -26,6 +27,7 @@ switch (Titanium.Platform.name) {
 	default:
 		color = {
 			bg: gray, //probably should be some kind of simple texture?
+			bgOp: black,
 			label: darkGray,
 			text: darkGray,
 			field: {
