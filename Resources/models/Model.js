@@ -42,6 +42,7 @@ var config = require('config/database'),
  * 403 - Denied permission
  * 404 - Wrong URL
  * 405 - Wrong verb
+ * 415 - Lack of header "Content-Type: application/json;charset=utf-8"
  */
 module.exports = {
 	_URL: _.template('https://api.mongolab.com/api/1/databases/marketshare/collections/<%=collection%>/<%=id%>?<%=queryString%>&apiKey='+config.API_KEY),
@@ -55,6 +56,26 @@ module.exports = {
 		DELETE:  4	//D
 	},
 	
+	/**
+	 * Should be overriden by the upper models to list its fields
+	 */
+	fields: ['id'],
+	
+	/**
+	 * Sets all fields for this model. Should be overriden by the Model if it needs fine control
+	 * over object creation.
+	 */
+	setFields: function(values) {
+		_.each(this.fields, function(field) {
+			if (field == 'id' && _.has(values, '_id')) {
+				this['id'] = values['_id']['$oid']
+			}
+			else {
+				this[field] = values[field]
+			}
+		}, this)
+	},
+	
 	findById: function(collection, id, callback) {
 		this.makeRequest(collection, this.REQUEST.FIND, {id: id}, callback)
 	},
@@ -63,6 +84,23 @@ module.exports = {
 		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: true}, callback)
 	},
 	
+	save: function(collection, obj, callback) {
+		var data = {}
+		_.each(obj.fields, function(field) {
+			data[field] = this[field]
+		}, obj)
+		
+		this.makeRequest(collection, (data.id)? this.REQUEST.REPLACE : this.REQUEST.INSERT, data, {}, function(insertedData) {
+			obj.setFields(insertedData)
+			callback(obj)
+		})
+	},
+	
+	
+/**
+ ************************************************ INTERNAL METHODS ************************************************ 
+ */
+	
 	mountUrl: function(collection, id, queryString) {
 		//verifying parameters to make sure no one is empty
 		if (!collection) throw { name: 'ArgumentError', message: 'collection not specified!' }
@@ -70,11 +108,12 @@ module.exports = {
 		queryString = queryString || null
 		
 		if (queryString) {
-		    
             var qsParts = []
 		    _.each(queryString, function(data, key) {
+		    	if (typeof data == 'object' && data.length == 0) return
 		        var encodedData = encodeURIComponent((key == 'q')? JSON.stringify(data) : data)
-		        qsParts.push(key+'='+encodedData)
+		        if (encodedData != '%7B%7D') //TODO I have no idea why _.isEmpty(data) when JSON.stringify(data) is {} returns false, so there's no way to avoid this workaround here
+		        	qsParts.push(key+'='+encodedData)
 		    })
 		    queryString = qsParts.join('&')
 		}
@@ -95,13 +134,14 @@ module.exports = {
 	 * @todo support DELETE verb using «id» URL param (currently Delete operations are done through replacing with {})
 	 */
 	makeRequest: function(collection, requestType, data, queryString, callback) {
-		if (!_.contains(this.REQUEST, requestType)) 
+		if (!_.contains(this.REQUEST, requestType))
 			throw { name: 'ArgumentError', message: 'request should be one of the Model.request constants.' }
 		
 		var response, request = Ti.Network.createHTTPClient({
 			timeout: this.timeout,
-			autoEncodeUrl: false,
+			autoEncodeUrl: false, //TODO is this really needed?
 			onload: function(source) {
+				Ti.API.info("Response was: "+this.responseText)
 				response = JSON.parse(this.responseText)
 				if (_.contains([200, 201], this.status)) {
                     callback(response)
@@ -136,11 +176,13 @@ module.exports = {
 				data.id = undefined
 			}
 			else {
-				queryString.query = _.extend(queryString.query || {}, { id: data.id })
+				queryString.q = _.extend(queryString.q || {}, { id: data.id })
 			}
 		}
 		
-		Ti.API.info('MONGO REQUEST: '+this.mountUrl(collection, useId, queryString))
+		Ti.API.info('MONGO ['+verb+']: '+this.mountUrl(collection, useId, queryString))
+		if (verb != 'GET') Ti.API.info('Data sent: '+JSON.stringify(data))
+		
 		request.open(verb, this.mountUrl(collection, useId, queryString))
 		
 		var headers = {
@@ -150,5 +192,13 @@ module.exports = {
 		_.each(headers, function(value, title) { request.setRequestHeader(title, value) })
 		
 		request.send(JSON.stringify(data))
+	},
+	
+	/**
+	 * Validates each of the model's fields
+	 * @TODO implement this shit
+	 */
+	validate: function() {
+		return true
 	}
 }
