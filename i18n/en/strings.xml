@@ -16,6 +16,7 @@
 		<string name="neverUsed">Never used before?\nCreate a new account here ▶</string>
 		<string name="newAccount">New User</string>
 		<string name="invalidLogin">Wrong e-mail or password</string>
+		<string name="passwordMismatch">The Password field does not match the confirmation</string>
 		
 	<string name="newAccountWindow">New account</string>
 		<string name="name">Name</string>

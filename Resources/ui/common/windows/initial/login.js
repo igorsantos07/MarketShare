@@ -61,17 +61,31 @@ module.exports = function() {
 	})
 	
 	win.addEventListener('login', function(credentials) {
-		var user = new User()
-		user.find({ email: email.value, password: Ti.Utils.md5HexDigest(password.value) }, function(user) {
+		var userFound = function (user) {
             if (user) {
-                //TODO: should save the user ID into an app property (in the file system)
+            	if (typeof user.id == 'string')
+            		var id = user.id
+            	else if (typeof user.id == 'object' && _.has(user.id, '$oid'))
+            		var id = user.id['$oid']
+            	else
+            		Ti.API.error('Could not find ID for user during login! Got '+JSON.stringify(user))
+            		
+				Ti.App.Properties.setString('userId', id)
                 var home = require('ui/common/windows/main/lists')()
                 home.open()
             }
             else {
                 alert(L('invalidLogin'))
             }
-		})
+		}
+		
+		if (credentials.id) {
+			userFound(credentials)
+		}
+		else {
+			var user = new User()
+			user.find({ email: credentials.email, password: Ti.Utils.md5HexDigest(credentials.password) }, userFound)
+		}
 	})
 	
 	return win
