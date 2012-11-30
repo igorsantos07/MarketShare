@@ -77,11 +77,15 @@ module.exports = {
 	},
 	
 	findById: function(collection, id, callback) {
-		this.makeRequest(collection, this.REQUEST.FIND, {id: id}, callback)
+		this.makeRequest(collection, this.REQUEST.FIND, {id: id}, null, callback)
 	},
 	
 	find: function(collection, query, callback) {
 		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: true}, callback)
+	},
+	
+	findAll: function(collection, query, callback) {
+		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: false}, callback)
 	},
 	
 	save: function(collection, obj, callback) {
@@ -141,8 +145,9 @@ module.exports = {
 			timeout: this.timeout,
 			autoEncodeUrl: false, //TODO is this really needed?
 			onload: function(source) {
-				Ti.API.info("Response was: "+this.responseText)
 				response = JSON.parse(this.responseText)
+				if (response == null) response = {}
+				Ti.API.info("Response was ["+typeof response+']: '+JSON.stringify(response))
 				if (_.contains([200, 201], this.status)) {
                     callback(response)
                 }				    
@@ -190,7 +195,7 @@ module.exports = {
 			'Content-Type': 'application/json;charset=utf-8'
 		}
 		_.each(headers, function(value, title) { request.setRequestHeader(title, value) })
-		
+
 		request.send(JSON.stringify(data))
 	},
 	
