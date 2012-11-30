@@ -1,7 +1,7 @@
 var _ = require('lib/underscore-1.4.2')._,
 	Model = require('models/Model')
 
-function User (idOrProperties) {
+function User (idOrProperties, callback) {
 	
 	this.COLLECTION = 'users'
 	
@@ -14,15 +14,19 @@ function User (idOrProperties) {
 	]
 
 	switch (typeof(idOrProperties)) {
-		case 'number':
-			this.id = idOrProperties
-			this.findById(this.id, function(data) {
-				this.setFields(data)
-			})
+		case 'string':
+			if (idOrProperties.length == 24) { //pretty much reliable that this is a mongo ObjectID
+				this.id = idOrProperties
+				this.findById(this.id, function(data) {
+					if (_.isFunction(callback))
+						callback(data)
+				})
+			}
 		break
 		
 		case 'object':
 			this.setFields(idOrProperties)
+			if (_.isFunction(callback)) callback(this)
 		break
 	}
 		
@@ -38,6 +42,10 @@ User.prototype.findById = function(id, callback) {
 
 User.prototype.find = function(query, callback) {
 	Model.find(this.COLLECTION, query, callback)
+}
+
+User.prototype.findAll = function(query, callback) {
+	Model.findAll(this.COLLECTION, query, callback)
 }
 
 User.prototype.save = function(callback) {
