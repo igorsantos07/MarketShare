@@ -2,52 +2,73 @@ var config = require('config/database'),
 	_ = require('lib/underscore-1.4.2')._
 
 /**
+ * @class Model
+ * @member Models
+ * 
  * To interact with a collection you should use the following URL, and call
  * it with the given verb. All non-GET requests should specify a JSON in the body.
  * You should also add a query-string argument apiKey with the user's key.
  * 
- * {{Base Data}}
- * {URL}: http://api.mongolab.com/api/1/databases/«database»/collections/«collection»/
- * {Header}: Content-Type: application/json;charset=utf-8
+ * # Base Data
  * 
- * {{Plain Actions}}
- * {{ ACTION   VERB  QUERY-STRING ARGS   SAMPLE BODY                                }}
- *    Insert   POST   «none»            (accepts an object or an array of objects)
+ * * **URL**: http://api.mongolab.com/api/1/databases/`«database»`/collections/`«collection»`/
+ * * **Header**: Content-Type: application/json;charset=utf-8
  * 
- * {{Identifiable Actions}}
+ * # MongoLab API Actions
+ * 
+ * ## Plain Actions
+ * * **Insert** `[POST]` no queryString
+ *     * sample body: *(one object or array)*
+ * 
+ * ## Identifiable Actions
  * The following methods have two ways to be used: using a simple trailing slash in
- * the end or adding the object _id. With the _id you won't use any queryString parameters.
+ * the end or adding the object `_id`. With the `_id` you won't use any queryString parameters.
  * 
- * {{ ACTION    VERB  QUERY-STRING ARGS   SAMPLE BODY    ________        }}
- *    Find All  GET    q,c,f,fo,s,sk,l      «empty»
- *    Replace   PUT    q					(one object or array)
- *    Update    PUT    q,m,u				{ "$set": { "x": 3 } }
- *    Delete    PUT    q					{ } «always an empty object»
- *    Delete   DELETE  «none»               URL requires «id» part
+ * * **Find All** `[GET]`
+ *     * args: q,c,f,fo,s,sk,l
+ *     * sample body: *«empty»*
+ * * **Replace** `[PUT]`
+ *     * args: q
+ *     * sample body: *(one object or array)*
+ * * **Update** `[PUT]`
+ *     * args: q,m,u
+ *     * sample body: `{ "$set": { "x": 3 } }`
+ * * **Delete**
+ *     * `[PUT]`
+ *         * args: q
+ *         * sample body: `{ }` *«always an empty object»*
+ *     * `[DELETE]`, no queryString
+ *         * notes: URL requires «id» part
  * 
- * {{Query-string arguments}}
- * q=«string»  - restrict results by the specified JSON {query}
- * c=«bool»    - return the result {count} for this query
- * f=«string»  - specify the set of {fields} to include or exclude in each document (1 - include; 0 - exclude)
- * fo=«bool»   - return a single document from the result set (same as {findOne}() using the mongo shell
- * s=«number»  - specify the order in which to {sort} each specified field (1: ascending; -1: descending)
- * sk=«number» - specify the number of results to {skip} in the result set; useful for paging
- * l=«number»  - specify the {limit} for the number of results (default is 1000)
+ * ## Query-string arguments
+ * * `q=«string»`  - restrict results by the specified JSON {query}
+ * * `c=«bool»`    - return the result {count} for this query
+ * * `f=«string»`  - specify the set of {fields} to include or exclude in each document (1 - include; 0 - exclude)
+ * * `fo=«bool»`   - return a single document from the result set (same as {findOne}() using the mongo shell
+ * * `s=«number»`  - specify the order in which to {sort} each specified field (1: ascending; -1: descending)
+ * * `sk=«number»` - specify the number of results to {skip} in the result set; useful for paging
+ * * `l=«number»`  - specify the {limit} for the number of results (default is 1000)
  * 
- * {{Status Codes}}
- * 200 - Worked
- * 201 - Created
- * 400 - Misformatted data
- * 401 - Wrong credentials
- * 403 - Denied permission
- * 404 - Wrong URL
- * 405 - Wrong verb
- * 415 - Lack of header "Content-Type: application/json;charset=utf-8"
+ * ## Returned Status Codes
+ * * 200 - Worked
+ * * 201 - Created *(turns out that the 1.0 API don't return this code when a new entry is created; it does return 200)*
+ * * 400 - Misformatted data
+ * * 401 - Wrong credentials
+ * * 403 - Denied permission
+ * * 404 - Wrong URL
+ * * 405 - Wrong verb
+ * * 415 - Lack of header `Content-Type: application/json;charset=utf-8`
  */
 module.exports = {
+	/** Used internally to generate the final request URL
+	 * @type {Function} 
+	 * @private */
 	_URL: _.template('https://api.mongolab.com/api/1/databases/marketshare/collections/<%=collection%>/<%=id%>?<%=queryString%>&apiKey='+config.API_KEY),
+	
+	/** Default timeout */
 	TIMEOUT: 5000,
 	
+	/** Constants for each type of Request the API should understand */
 	REQUEST: {
 		INSERT:  0,	//C
 		FIND:    1,	//R
@@ -56,14 +77,14 @@ module.exports = {
 		DELETE:  4	//D
 	},
 	
-	/**
-	 * Should be overriden by the upper models to list its fields
-	 */
+	/** Should be overriden by the upper models to list its fields
+	 * @type {Array} */
 	fields: ['id'],
 	
 	/**
 	 * Sets all fields for this model. Should be overriden by the Model if it needs fine control
 	 * over object creation.
+	 * @param {Object} values All values to be set
 	 */
 	setFields: function(values) {
 		_.each(this.fields, function(field) {
@@ -76,18 +97,42 @@ module.exports = {
 		}, this)
 	},
 	
+	/**
+	 * Finds a Model by its ID
+	 * @param {String} collection
+	 * @param {String} id
+	 * @param {Function} callback
+	 */
 	findById: function(collection, id, callback) {
 		this.makeRequest(collection, this.REQUEST.FIND, {id: id}, null, callback)
 	},
 	
+	/**
+	 * Finds only one Model by a variable query. If you need many, use {@link Model#findAll}
+	 * @param {String} collection
+	 * @param {Object} query an object with each field that should be passed as a MongoDB query
+	 * @param {Function} callback
+	 */
 	find: function(collection, query, callback) {
 		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: true}, callback)
 	},
 	
+	/**
+	 * Finds all Models that matches a query. If you need only one, use {@link Model#find}
+	 * @param {String} collection
+	 * @param {Object} query an object with each field that should be passed as a MongoDB query
+	 * @param {Function} callback
+	 */
 	findAll: function(collection, query, callback) {
 		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: false}, callback)
 	},
 	
+	/**
+	 * Saves the current model state in the database.
+	 * @param {String} collection
+	 * @param {Object} obj The upper classes should send themselves here
+	 * @param {Function} callback
+	 */
 	save: function(collection, obj, callback) {
 		var data = {}
 		_.each(obj.fields, function(field) {
@@ -101,7 +146,7 @@ module.exports = {
 	},
 	
 	
-/**
+/*
  ************************************************ INTERNAL METHODS ************************************************ 
  */
 	
@@ -127,13 +172,16 @@ module.exports = {
 	
 	/**
 	 * Creates a generic request.
-	 * @param string collection name of the collection (table) to operate on
-	 * @param const requestType one of Model.REQUEST constants
-	 * @param Object data [optional] an object or an array of objects, depending on the request type.
-	 * 		You can add here a special property "id" that would hold the object _id; this can be used
-	 * 		to perform finds, updates, replaces and deletes, and it has higher precedence than the 
-	 * 		queryString.query.id (aka queryString.query.id will be replaced if data.id is present)
-	 * @param Object queryString [optional] additional query string arguments, organized in a hash
+	 * @private
+	 * 
+	 * @param {String} collection name of the collection (table) to operate on
+	 * @param {const} requestType one of Model.REQUEST constants
+	 * @param {Object} data [optional] an object or an array of objects, depending on the request type.
+	 * You can add here a special property "id" that would hold the object _id; this can be used
+	 * to perform finds, updates, replaces and deletes, and it has higher precedence than the 
+	 * queryString.query.id (aka queryString.query.id will be replaced if data.id is present)
+	 * @param {Object} queryString [optional] additional query string arguments, organized in a hash
+	 * @param {Function} callback [optional] called when the request is successful. Receives as argument the object returned by the request
 	 * 
 	 * @todo support DELETE verb using «id» URL param (currently Delete operations are done through replacing with {})
 	 */

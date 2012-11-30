@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">module.exports = function() {
+	var ui = require(&quot;ui/common/components/all&quot;),
+		spacing = 20
+	
+	var win = ui.createWindow('newGroup', { navBarHidden: false } )
+	
+	var container = Ti.UI.createScrollView()
+		var form = Ti.UI.createView({ width: '80%', layout: 'vertical' })
+			
+			var name = ui.createTextField()
+			form.add(ui.createFieldLabel({ textid: 'name', top: spacing }))
+			form.add(name)
+			
+			var btnSave = ui.createButton({
+				top: spacing,
+				width: '100%',
+				titleid: 'createJoin'
+			})
+			form.add(btnSave)
+		
+		container.add(form)
+	win.add(container)
+	
+	btnSave.addEventListener('click', function(e) {
+		alert('Going to create the group named &quot;'+name.value+'&quot;&quot;')
+		win.close()
+	})
+	
+	return win
+}</pre>
+</body>
+</html>

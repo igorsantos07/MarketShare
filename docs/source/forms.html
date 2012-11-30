@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var _ = require('lib/underscore-1.4.2')._,
+	color = require('ui/common/components/colors'),
+	android = (Titanium.Platform.name == 'android'),
+	iOS = (Titanium.Platform.name == 'iphone' || Titanium.Platform.name == 'ipad')
+
+exports.createTextField = function(properties) {
+	var defaultValues = {
+		width: '100%',
+		backgroundColor: color.field.bg,
+		color: color.field.color
+	}
+	
+	if (iOS) {
+		_.extend(defaultValues, {
+		//borderColor: darkGray,
+		borderStyle: Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
+		//borderRadius: 10,
+		//borderWidth: 1
+		})
+	}
+	
+	return Ti.UI.createTextField(_.defaults(properties || {}, defaultValues))	
+}
+
+<span id='global-method-'>/**
+</span> * Creates a picker with an array of simple strings/numbers
+ * @param Array data
+ * @param Object properties [optional]
+ * @param boolean useTitle [optional] if the values are to be used as &quot;title&quot; or &quot;titleid&quot;. Defaults to false 
+ */
+exports.createSimplePicker = function(data, properties, useTitle) {
+	var rows = [],
+		picker = Ti.UI.createPicker(_.defaults(properties || {}, {
+			width: '100%'
+		}))
+	
+	for (var i in data)
+		rows[i] = Ti.UI.createPickerRow( useTitle? { title: data[i] } : { titleid: data[i] } )
+		
+	picker.add(rows)
+	return picker
+}
+
+<span id='global-method-'>/**
+</span> * Creates a switch object, forcing checkbox style in Android
+ * @param string titleid
+ * @param Object properties [optional]
+ * @param boolean useTitle [optional] if titleid should be used as a raw title instead
+ */
+exports.createCheckbox = function(titleid, properties, useTitle) {
+	return Ti.UI.createSwitch(
+		_.extend(
+			_.defaults(properties || {}, 
+				useTitle? { title: titleid } : { titleid: titleid }	
+			),
+			{ style: Ti.UI.Android.SWITCH_STYLE_CHECKBOX }
+		)
+	)
+}
+
+exports.createLabel = function(properties) {
+	return Ti.UI.createLabel(_.defaults(properties || {}, {
+		width: '100%',
+		color: color.text,
+		textAlign: Ti.UI.TEXT_ALIGNMENT_LEFT
+	}))	
+}
+
+exports.createFieldLabel = function(properties) {
+	return exports.createLabel(_.defaults(properties || {}, {
+		color: color.label,
+		font: { fontSize: 16 }
+	}))	
+}
+
+exports.createButton = function(properties) {
+	return Ti.UI.createButton(_.defaults(properties || {}, {
+		borderRadius: 10
+	}))
+}</pre>
+</body>
+</html>

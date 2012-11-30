@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var _ = require('lib/underscore-1.4.2')._,
+	color = {},
+	darkerGray	= '#212021',
+	darkGray	= '#4A4542',
+	gray		= '#B5B6B5',
+	//now some default colors just to use variables with everything
+	white		= 'white',
+	black		= 'black'
+
+switch (Titanium.Platform.name) {
+	
+	case 'android':
+		color = {
+			bg: black,
+			bgOp: gray,
+			label: white,
+			text: darkGray,
+			field: {
+				bg: darkerGray,
+				color: white
+			}
+		}
+	break;
+	
+	case 'iPhone OS':
+	case 'iPad OS':
+	default:
+		color = {
+			bg: gray, //probably should be some kind of simple texture?
+			bgOp: black,
+			label: darkGray,
+			text: darkGray,
+			field: {
+				bg: white,
+				color: darkGray
+			}
+		}
+	break;
+	
+}
+
+_.extend(exports, color)</pre>
+</body>
+</html>

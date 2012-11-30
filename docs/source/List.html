@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var _ = require('lib/underscore-1.4.2')._,
+	Model = require('models/Model')
+	
+<span id='List'>/**
+</span> * @class List
+ * @member Models
+ */
+function List (idOrProperties, callback) {
+	
+	this.COLLECTION = 'lists'
+	
+	this.fields = [
+		'id',
+		'name',
+		'products',
+		'closed',
+		'paid'
+	]
+
+	switch (typeof(idOrProperties)) {
+		case 'string':
+			if (idOrProperties.length == 24) { //pretty much reliable that this is a mongo ObjectID
+				this.id = idOrProperties
+				this.findById(this.id, function(data) {
+					if (_.isFunction(callback))
+						callback(data)
+				})
+			}
+		break
+		
+		case 'object':
+			this.setFields(idOrProperties)
+			if (_.isFunction(callback)) callback(this)
+		break
+	}
+		
+}
+
+_.extend(List.prototype, Model)
+
+List.prototype.defaultName = function() {
+	var date = new Date(),
+		min = date.getMinutes(),
+		sec = date.getSeconds()
+		
+	return [/*date.getFullYear(), */date.getMonth()+1, date.getDate()].join('-') //with year the name is too long to fit in the title bar
+	        +' '+
+		    [date.getHours(), (min &lt; 10)? '0'+min : min, (sec &lt; 10)? '0'+sec : sec].join(':')
+}
+
+//TODO: Maybe all those overrides could be moved to the Model, using this.COLLECTION?
+
+<span id='List-method-findById'>/** 
+</span> * @method findById
+ * @inheritdoc Model#findById
+ */
+List.prototype.findById = function(id, callback) {
+	Model.findById(this.COLLECTION, id, callback)
+}
+
+<span id='List-method-find'>/** 
+</span> * @method find
+ * @inheritdoc Model#find
+ */
+List.prototype.find = function(query, callback) {
+	Model.find(this.COLLECTION, query, callback)
+}
+
+<span id='List-method-findAll'>/** 
+</span> * @method findAll
+ * @inheritdoc Model#findAll
+ */
+List.prototype.findAll = function(query, callback) {
+	Model.findAll(this.COLLECTION, query, callback)
+}
+
+<span id='List-method-save'>/** 
+</span> * @method save
+ * @inheritdoc Model#save
+ */
+List.prototype.save = function(callback) {
+	if (!this.name)
+		this.name = this.defaultName()
+		
+	Model.save(this.COLLECTION, this, callback)
+}
+
+module.exports = List</pre>
+</body>
+</html>

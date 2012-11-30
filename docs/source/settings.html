@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">module.exports = function() {
+	var ui = require(&quot;ui/common/components/all&quot;),
+		spacing = 10
+	
+	var win = ui.createMainWindow('settingsWindow', { layout: &quot;vertical&quot; })
+	win.add(Ti.UI.createLabel({text:&quot;could this screen be replaced by default android settings screen?&quot;, top: 20, width: '80%' }))
+	
+	var logout = ui.createButton({title: 'logout', top: 70})
+	logout.addEventListener('click', function() {
+		win.containingTab.tabGroup.fireEvent('logout')
+	})
+	win.add(logout)
+	
+	ui.setMenu(win, [
+		{
+			itemId: 1,
+			titleid: 'listsWindow',
+			icon: 'images/icons/lists.png',
+			hidden: true,
+			click: function(e) { ui.goTo('main/lists') }
+		},
+		{
+			itemId: 2,
+			titleid: 'groupsWindow',
+			icon: 'images/icons/groups.png',
+			hidden: true,
+			click: function(e) { ui.goTo('main/groups') }
+		}
+	])
+	
+	return win
+}</pre>
+</body>
+</html>

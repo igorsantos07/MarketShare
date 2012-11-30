@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">module.exports = function() {
+	var ui = require(&quot;ui/common/components/all&quot;)
+	
+	var win = ui.createMainWindow('groupsWindow')
+	
+		var table = ui.createTableView()
+	
+			table.appendRow(ui.createTableViewRow({ title: &quot;Group 1&quot; }))
+			table.appendRow(ui.createTableViewRow({ title: &quot;Group 2&quot; }))
+			table.appendRow(ui.createTableViewRow({ title: &quot;Group 3&quot; }))
+		
+		win.add(table)
+		
+		ui.setMenu(win, [
+			{
+				itemId: 1,
+				titleid: 'joinGroup',
+				icon: 'images/icons/join.png',
+				click: function(e) { ui.goTo('main/groupJoin') }
+			},
+			{
+				itemId: 2,
+				titleid: 'newGroup',
+				icon: Ti.Android.R.drawable.ic_menu_add,
+				click: function(e) { ui.goTo('main/groupNew') }
+			},
+			{
+				itemId: 3,
+				titleid: 'listsWindow',
+				icon: 'images/icons/lists.png',
+				hidden: true,
+				click: function(e) { ui.goTo('main/lists') }
+			},
+			{
+				itemId: 4,
+				titleid: 'settingsWindow',
+				icon: Ti.Android.R.drawable.ic_menu_preferences,
+				hidden: true,
+				click: function(e) { ui.goTo('main/settings') }
+			}
+		])
+		
+	return win
+}</pre>
+</body>
+</html>
