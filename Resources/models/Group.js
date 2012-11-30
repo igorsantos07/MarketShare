@@ -2,22 +2,22 @@ var _ = require('lib/underscore-1.4.2')._,
 	Model = require('models/Model')
 	
 /**
- * @class User
+ * @class Group
  * @extends Model
- * Implementation of "users" collection.
- * Representation of an app user in the database. Should have a {@link Group}.
+ * Implementation of "groups" collection.
+ * Representation of a group of users, sharing expenses.
  * 
  * @constructor
- * Creates a User object based on an ID or an Object with the fields
- * @param {String/Object} idOrProperties User ID or object properties. If ID, does a {@link User#find};
+ * Creates a Group object based on an ID or an Object with the fields
+ * @param {String/Object} idOrProperties Group ID or object properties. If ID, does a {@link Group#find};
  * 		if property, calls {@link Model#setFields}
- * @param {Function} callback (optional) to be called after {@link User#find} or {@link Model#setFields}
+ * @param {Function} callback (optional) to be called after {@link Group#find} or {@link Model#setFields}
  */
-function User (idOrProperties, callback) {
+function Group (idOrProperties, callback) {
 	
 	/** Collection name
 	 * @type {String} */
-	this.COLLECTION = 'users'
+	this.COLLECTION = 'groups'
 	
 	/** Collection fields
 	 * @property fields
@@ -26,9 +26,8 @@ function User (idOrProperties, callback) {
 	this.fields = [
 		'id',
 		'name',
-		'surname',
-		'email',
-		'password'
+		'users',
+		'lists'
 	]
 
 	switch (typeof(idOrProperties)) {
@@ -47,8 +46,8 @@ function User (idOrProperties, callback) {
 			if (_.isFunction(callback)) callback(this)
 		break
 	}
-		
-}
+}		
+
 
 _.extend(User.prototype, Model)
 

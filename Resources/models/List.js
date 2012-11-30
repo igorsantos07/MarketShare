@@ -3,12 +3,26 @@ var _ = require('lib/underscore-1.4.2')._,
 	
 /**
  * @class List
- * @member Models
+ * @extends Model
+ * Implementation of "lists" collection.
+ * Holds products to be bought, and should belongs to a {@link Group}.
+ * 
+ * @constructor
+ * Creates a List object based on an ID or an Object with the fields
+ * @param {String/Object} idOrProperties List ID or object properties. If ID, does a {@link List#find};
+ * 		if property, calls {@link Model#setFields}
+ * @param {Function} callback (optional) to be called after {@link List#find} or {@link Model#setFields}
  */
 function List (idOrProperties, callback) {
 	
+	/** Collection name
+	 * @type {String} */
 	this.COLLECTION = 'lists'
 	
+	/** Collection fields
+	 * @property fields
+	 * @protected
+	 * @type {Array} */
 	this.fields = [
 		'id',
 		'name',
@@ -38,6 +52,12 @@ function List (idOrProperties, callback) {
 
 _.extend(List.prototype, Model)
 
+/**
+ * @method defaultName
+ * Generates a default name for the list, to be used if none is given
+ * when creating a new one.
+ * @return {String} A date string in the format MM-DD HH:MM:SS
+ */
 List.prototype.defaultName = function() {
 	var date = new Date(),
 		min = date.getMinutes(),
