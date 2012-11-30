@@ -14,7 +14,6 @@ exports.createWindow = function(titleid, properties) {
 
 exports.createMainWindow = function(titleid, properties) {
 	return exports.createWindow(titleid, _.defaults(properties || {}, {
-		exitOnClose: true,
 		navBarHidden: false
 	}))
 }
@@ -64,7 +63,9 @@ exports.setMenu = function(win, items) {
 }
 
 exports.goTo = function(windowName) {
-	win = require('ui/common/windows/'+windowName)()
+	var args = Array.prototype.slice.call(arguments)
+	windowName = args.shift() //removing windowName from the other arguments
+	var win = require('ui/common/windows/'+windowName)(args)
 	win.open()
 	return win
 }
