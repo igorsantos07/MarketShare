@@ -18,25 +18,25 @@
   <pre class="prettyprint lang-js">var _ = require('lib/underscore-1.4.2')._,
 	Model = require('models/Model')
 	
-<span id='User-method-constructor'><span id='User'>/**
-</span></span> * @class User
- * @extends Model
+<span id='Models-User-method-constructor'><span id='Models-User'>/**
+</span></span> * @class Models.User
+ * @extends Models.Model
  * Implementation of &quot;users&quot; collection.
- * Representation of an app user in the database. Should have a {@link Group}.
+ * Representation of an app user in the database. Should have a {@link Models.Group}.
  * 
  * @constructor
  * Creates a User object based on an ID or an Object with the fields
- * @param {String/Object} idOrProperties User ID or object properties. If ID, does a {@link User#find};
- * 		if property, calls {@link Model#setFields}
- * @param {Function} callback (optional) to be called after {@link User#find} or {@link Model#setFields}
+ * @param {String/Object} idOrProperties User ID or object properties. If ID, does a {@link Models.User#find};
+ * 		if property, calls {@link Models.Model#setFields}
+ * @param {Function} callback (optional) to be called after {@link Models.User#find} or {@link Models.Model#setFields}
  */
 function User (idOrProperties, callback) {
 	
-<span id='User-property-COLLECTION'>	/** Collection name
+<span id='Models-User-property-COLLECTION'>	/** Collection name
 </span>	 * @type {String} */
 	this.COLLECTION = 'users'
 	
-<span id='User-property-fields'>	/** Collection fields
+<span id='Models-User-property-fields'>	/** Collection fields
 </span>	 * @property fields
 	 * @protected
 	 * @type {Array} */
@@ -71,33 +71,33 @@ _.extend(User.prototype, Model)
 
 //TODO: Maybe all those overrides could be moved to the Model, using this.COLLECTION?
 
-<span id='User-method-findById'>/** 
+<span id='Models-User-method-findById'>/** 
 </span> * @method findById
- * @inheritdoc Model#findById
+ * @inheritdoc Models.Model#findById
  */
 User.prototype.findById = function(id, callback) {
 	Model.findById(this.COLLECTION, id, callback)
 }
 
-<span id='User-method-find'>/** 
+<span id='Models-User-method-find'>/** 
 </span> * @method find
- * @inheritdoc Model#find
+ * @inheritdoc Models.Model#find
  */
 User.prototype.find = function(query, callback) {
 	Model.find(this.COLLECTION, query, callback)
 }
 
-<span id='User-method-findAll'>/** 
+<span id='Models-User-method-findAll'>/** 
 </span> * @method findAll
- * @inheritdoc Model#findAll
+ * @inheritdoc Models.Model#findAll
  */
 User.prototype.findAll = function(query, callback) {
 	Model.findAll(this.COLLECTION, query, callback)
 }
 
-<span id='User-method-save'>/** 
+<span id='Models-User-method-save'>/** 
 </span> * @method save
- * @inheritdoc Model#save
+ * @inheritdoc Models.Model#save
  */
 User.prototype.save = function(callback) {
 	Model.save(this.COLLECTION, this, callback)

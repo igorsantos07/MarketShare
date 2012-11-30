@@ -3,6 +3,17 @@ var _ = require('lib/underscore-1.4.2')._,
 	android = (Titanium.Platform.name == 'android'),
 	iOS = (Titanium.Platform.name == 'iphone' || Titanium.Platform.name == 'ipad')
 
+/**
+ * @class UI.Forms
+ * CommonJS module that contains all form-related widgets.
+ */
+
+/**
+ * @method createTextField
+ * Creates a text field, suitable for user text input.
+ * @param {Object} properties (optional) additional properties for the text field
+ * @return {Ti.UI.TextField}
+ */
 exports.createTextField = function(properties) {
 	var defaultValues = {
 		width: '100%',
@@ -23,10 +34,12 @@ exports.createTextField = function(properties) {
 }
 
 /**
- * Creates a picker with an array of simple strings/numbers
- * @param Array data
- * @param Object properties [optional]
- * @param boolean useTitle [optional] if the values are to be used as "title" or "titleid". Defaults to false 
+ * @method createSimplePicker
+ * Creates a picker with an array of simple strings/numbers.
+ * @param {Array} data each option in the picker
+ * @param {Object} properties (optional)
+ * @param {boolean} useTitle (optional) if the values are to be used as "title" or "titleid". Defaults to false
+ * @return {Ti.UI.Picker}
  */
 exports.createSimplePicker = function(data, properties, useTitle) {
 	var rows = [],
@@ -42,10 +55,12 @@ exports.createSimplePicker = function(data, properties, useTitle) {
 }
 
 /**
- * Creates a switch object, forcing checkbox style in Android
- * @param string titleid
- * @param Object properties [optional]
- * @param boolean useTitle [optional] if titleid should be used as a raw title instead
+ * @method createCheckbox
+ * Creates a switch object, forcing checkbox style in Android.
+ * @param {String} titleid
+ * @param {Object} properties (optional)
+ * @param {boolean} useTitle (optional) if titleid should be used as a raw title instead
+ * @return {Ti.UI.Switch}
  */
 exports.createCheckbox = function(titleid, properties, useTitle) {
 	return Ti.UI.createSwitch(
@@ -58,6 +73,12 @@ exports.createCheckbox = function(titleid, properties, useTitle) {
 	)
 }
 
+/**
+ * @method createLabel
+ * Creates a text label, to write text in the screen.
+ * @param {Object} properties (optional) additional properties for the text block
+ * @return {Ti.UI.Label}
+ */
 exports.createLabel = function(properties) {
 	return Ti.UI.createLabel(_.defaults(properties || {}, {
 		width: '100%',
@@ -66,6 +87,12 @@ exports.createLabel = function(properties) {
 	}))	
 }
 
+/**
+ * @method createFieldLabel
+ * Creates a text label, to be used along with a form field. This method extends {@link UI.Forms#createFieldLabel}
+ * @param {Object} properties (optional) additional properties for the label
+ * @return {Ti.UI.Label}
+ */
 exports.createFieldLabel = function(properties) {
 	return exports.createLabel(_.defaults(properties || {}, {
 		color: color.label,
@@ -73,6 +100,13 @@ exports.createFieldLabel = function(properties) {
 	}))	
 }
 
+
+/**
+ * @method createButton
+ * Creates a button, to fire events.
+ * @param {Object} properties (optional) additional properties for the button
+ * @return {Ti.UI.Button}
+ */
 exports.createButton = function(properties) {
 	return Ti.UI.createButton(_.defaults(properties || {}, {
 		borderRadius: 10

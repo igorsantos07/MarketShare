@@ -2,8 +2,7 @@ var config = require('config/database'),
 	_ = require('lib/underscore-1.4.2')._
 
 /**
- * @class Model
- * @member Models
+ * @class Models.Model
  * 
  * To interact with a collection you should use the following URL, and call
  * it with the given verb. All non-GET requests should specify a JSON in the body.
@@ -111,7 +110,7 @@ module.exports = {
 	},
 	
 	/**
-	 * Finds only one Model by a variable query. If you need many, use {@link Model#findAll}
+	 * Finds only one Model by a variable query. If you need many, use {@link Models.Model#findAll}
 	 * @param {String} collection the collection name
 	 * @param {Object} query an object with each field that should be passed as a MongoDB query
 	 * @param {Function} callback (optional) a function to be called when the operation is done. Receives as argument a simple Object with the item's properties
@@ -121,7 +120,7 @@ module.exports = {
 	},
 	
 	/**
-	 * Finds all Models that matches a query. If you need only one, use {@link Model#find}
+	 * Finds all Models that matches a query. If you need only one, use {@link Models.Model#find}
 	 * @param {String} collection the collection name
 	 * @param {Object} query an object with each field that should be passed as a MongoDB query
 	 * @param {Function} callback (optional) a function to be called when the operation is done. Receives as argument the array of simple Objects
@@ -155,7 +154,7 @@ module.exports = {
 	
 	/**
 	 * Creates the basic URL needed for a database request.
-	 * @requires {@link Model#_URL Requires \_URL}
+	 * @requires {@link Models.Model#_URL Requires \_URL}
 	 * @private
 	 * 
 	 * @param {String} collection the collection name

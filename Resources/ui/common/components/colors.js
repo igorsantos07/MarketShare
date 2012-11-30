@@ -7,6 +7,19 @@ var _ = require('lib/underscore-1.4.2')._,
 	white		= 'white',
 	black		= 'black'
 
+/**
+ * @class UI.Colors
+ * Defines common colors to be used by the interface components.
+ * Uses different schemes depending on the current OS. 
+ */
+
+/** @property {String} bg window background */
+/** @property {String} bgOp to be used as semi-transparent background ("shadow") for hovering windows */
+/** @property {String} label field label */
+/** @property {String} text common text */
+/** @property {String} field.bg text field background */
+/** @property {String} field.color text field font color */
+
 switch (Titanium.Platform.name) {
 	
 	case 'android':

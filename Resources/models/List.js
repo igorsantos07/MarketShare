@@ -2,16 +2,16 @@ var _ = require('lib/underscore-1.4.2')._,
 	Model = require('models/Model')
 	
 /**
- * @class List
- * @extends Model
+ * @class Models.List
+ * @extends Models.Model
  * Implementation of "lists" collection.
- * Holds products to be bought, and should belongs to a {@link Group}.
+ * Holds products to be bought, and should belongs to a {@link Models.Group}.
  * 
  * @constructor
  * Creates a List object based on an ID or an Object with the fields
- * @param {String/Object} idOrProperties List ID or object properties. If ID, does a {@link List#find};
- * 		if property, calls {@link Model#setFields}
- * @param {Function} callback (optional) to be called after {@link List#find} or {@link Model#setFields}
+ * @param {String/Object} idOrProperties List ID or object properties. If ID, does a {@link Models.List#find};
+ * 		if property, calls {@link Models.Model#setFields}
+ * @param {Function} callback (optional) to be called after {@link Models.List#find} or {@link Models.Model#setFields}
  */
 function List (idOrProperties, callback) {
 	
@@ -72,7 +72,7 @@ List.prototype.defaultName = function() {
 
 /** 
  * @method findById
- * @inheritdoc Model#findById
+ * @inheritdoc Models.Model#findById
  */
 List.prototype.findById = function(id, callback) {
 	Model.findById(this.COLLECTION, id, callback)
@@ -80,7 +80,7 @@ List.prototype.findById = function(id, callback) {
 
 /** 
  * @method find
- * @inheritdoc Model#find
+ * @inheritdoc Models.Model#find
  */
 List.prototype.find = function(query, callback) {
 	Model.find(this.COLLECTION, query, callback)
@@ -88,7 +88,7 @@ List.prototype.find = function(query, callback) {
 
 /** 
  * @method findAll
- * @inheritdoc Model#findAll
+ * @inheritdoc Models.Model#findAll
  */
 List.prototype.findAll = function(query, callback) {
 	Model.findAll(this.COLLECTION, query, callback)
@@ -96,7 +96,7 @@ List.prototype.findAll = function(query, callback) {
 
 /** 
  * @method save
- * @inheritdoc Model#save
+ * @inheritdoc Models.Model#save
  */
 List.prototype.save = function(callback) {
 	if (!this.name)

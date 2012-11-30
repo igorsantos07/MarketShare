@@ -1,6 +1,18 @@
 var _ = require('lib/underscore-1.4.2')._,
 	color = require('ui/common/components/colors')
 
+/**
+ * @class UI.Windows
+ * CommonJS module that contains all window-related widgets and methods.
+ */
+
+/**
+ * @method createWindow
+ * Creates a common window.
+ * @param {String} titleid The i18n key for the title
+ * @param {Object} properties (optional) additional properties for the section
+ * @return {Ti.UI.Window}
+ */
 exports.createWindow = function(titleid, properties) {
 	return Ti.UI.createWindow(
 		_.defaults(
@@ -12,12 +24,30 @@ exports.createWindow = function(titleid, properties) {
 	)
 }
 
+/**
+ * @method createMainWindow
+ * Creates a window with almost the same behavior as {@link #createWindow}, except that in Android it
+ * becomes a Heavyweight Window (aka Activity). Still needs the property `exitOnClose` if it should be
+ * the root window.
+ * @param {String} titleid The i18n key for the title
+ * @param {Object} properties (optional) additional properties for the section
+ * @return {Ti.UI.Window}
+ */
 exports.createMainWindow = function(titleid, properties) {
 	return exports.createWindow(titleid, _.defaults(properties || {}, {
 		navBarHidden: false
 	}))
 }
 
+/**
+ * @method createTabWindow
+ * Generates a window with an internal `containingTab` property, useful for attaching
+ * this window to a TabGroup.
+ * @param {String} titleid The i18n key for the title
+ * @param {String} icon (optional) the icon to be used in the tab. Android 3.0+ tabs don't use icons anymore
+ * @param {Object} properties (optional) additional properties for the section
+ * @return {Ti.UI.Window}
+ */
 exports.createTabWindow = function(titleid, icon, properties) {
 	var win = exports.createWindow(titleid, _.defaults(properties || {}, {
 
@@ -38,11 +68,15 @@ exports.createTabWindow = function(titleid, icon, properties) {
  * TODO: item.hidden is adding the item to the old menu, not in the collapsible button 
  */
 /**
- * @param win the window to receive the menu items
- * @param menuItems an array of menu objects. Each object can have the following properties:
- *   titleid: the i18n key for its text
- *   icon: [optional] path to an image
- *   click: a callback function for the click event
+ * @method setMenu
+ * Used to make it easier to add a menu to an Android window.  
+ * **Android only**
+ * @param {Ti.UI.Window} win the window to receive the menu items
+ * @param {Object[]} menuItems an array of menu objects. Each object can have the following properties:
+ * 
+ *  - titleid: the i18n key for its text
+ *  - icon: (optional) path to an image
+ *  - click: a callback function for the click event
  */
 exports.setMenu = function(win, items) {
 	if (Titanium.Platform.name == 'android') {
@@ -62,6 +96,12 @@ exports.setMenu = function(win, items) {
 	}
 }
 
+/**
+ * @method goTo
+ * Useful to move around between windows. Will load and open the given window.
+ * @param {String} windowName name to be completed as: `ui/common/windows/«windowName»`
+ * @param {Mixed...} windowParams (optional) Other parameters to be sent to the window as a simple array
+ */
 exports.goTo = function(windowName) {
 	var args = Array.prototype.slice.call(arguments)
 	windowName = args.shift() //removing windowName from the other arguments

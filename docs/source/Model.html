@@ -18,9 +18,8 @@
   <pre class="prettyprint lang-js">var config = require('config/database'),
 	_ = require('lib/underscore-1.4.2')._
 
-<span id='Model'>/**
-</span> * @class Model
- * @member Models
+<span id='Models-Model'>/**
+</span> * @class Models.Model
  * 
  * To interact with a collection you should use the following URL, and call
  * it with the given verb. All non-GET requests should specify a JSON in the body.
@@ -77,16 +76,16 @@
  * * 415 - Lack of header `Content-Type: application/json;charset=utf-8`
  */
 module.exports = {
-<span id='Model-property-_URL'>	/** Used internally to generate the final request URL
+<span id='Models-Model-property-_URL'>	/** Used internally to generate the final request URL
 </span>	 * @type {Function} 
 	 * @private */
 	_URL: _.template('https://api.mongolab.com/api/1/databases/marketshare/collections/&lt;%=collection%&gt;/&lt;%=id%&gt;?&lt;%=queryString%&gt;&amp;apiKey='+config.API_KEY),
 	
-<span id='Model-property-TIMEOUT'>	/** Default timeout
+<span id='Models-Model-property-TIMEOUT'>	/** Default timeout
 </span>	 * @protected */
 	TIMEOUT: 5000,
 	
-<span id='Model-property-REQUEST'>	/** Constants for each type of Request the API should understand
+<span id='Models-Model-property-REQUEST'>	/** Constants for each type of Request the API should understand
 </span>	 * @private */
 	REQUEST: {
 		INSERT:  0,	//C
@@ -96,12 +95,12 @@ module.exports = {
 		DELETE:  4	//D
 	},
 	
-<span id='Model-property-fields'>	/** Should be overriden by the upper models to list its fields
+<span id='Models-Model-property-fields'>	/** Should be overriden by the upper models to list its fields
 </span>	 * @type {Array}
 	 * @protected */
 	fields: ['id'],
 	
-<span id='Model-method-setFields'>	/**
+<span id='Models-Model-method-setFields'>	/**
 </span>	 * Sets all fields for this model. Should be overriden by the Model if it needs fine control
 	 * over object creation.
 	 * @param {Object} values All values to be set
@@ -117,7 +116,7 @@ module.exports = {
 		}, this)
 	},
 	
-<span id='Model-method-findById'>	/**
+<span id='Models-Model-method-findById'>	/**
 </span>	 * Finds a Model by its ID
 	 * @param {String} collection the collection name
 	 * @param {String} id the ObjectID for the required item
@@ -127,8 +126,8 @@ module.exports = {
 		this.makeRequest(collection, this.REQUEST.FIND, {id: id}, null, callback)
 	},
 	
-<span id='Model-method-find'>	/**
-</span>	 * Finds only one Model by a variable query. If you need many, use {@link Model#findAll}
+<span id='Models-Model-method-find'>	/**
+</span>	 * Finds only one Model by a variable query. If you need many, use {@link Models.Model#findAll}
 	 * @param {String} collection the collection name
 	 * @param {Object} query an object with each field that should be passed as a MongoDB query
 	 * @param {Function} callback (optional) a function to be called when the operation is done. Receives as argument a simple Object with the item's properties
@@ -137,8 +136,8 @@ module.exports = {
 		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: true}, callback)
 	},
 	
-<span id='Model-method-findAll'>	/**
-</span>	 * Finds all Models that matches a query. If you need only one, use {@link Model#find}
+<span id='Models-Model-method-findAll'>	/**
+</span>	 * Finds all Models that matches a query. If you need only one, use {@link Models.Model#find}
 	 * @param {String} collection the collection name
 	 * @param {Object} query an object with each field that should be passed as a MongoDB query
 	 * @param {Function} callback (optional) a function to be called when the operation is done. Receives as argument the array of simple Objects
@@ -147,7 +146,7 @@ module.exports = {
 		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: false}, callback)
 	},
 	
-<span id='Model-method-save'>	/**
+<span id='Models-Model-method-save'>	/**
 </span>	 * Saves the current model state in the database.
 	 * @param {String} collection the collection name
 	 * @param {Object} obj The upper classes should send themselves here
@@ -170,9 +169,9 @@ module.exports = {
  ************************************************ INTERNAL METHODS ************************************************ 
  */
 	
-<span id='Model-method-mountUrl'>	/**
+<span id='Models-Model-method-mountUrl'>	/**
 </span>	 * Creates the basic URL needed for a database request.
-	 * @requires {@link Model#_URL Requires \_URL}
+	 * @requires {@link Models.Model#_URL Requires \_URL}
 	 * @private
 	 * 
 	 * @param {String} collection the collection name
@@ -200,7 +199,7 @@ module.exports = {
 		return this._URL({ collection: collection, id: id, queryString: queryString })
 	},
 	
-<span id='Model-method-makeRequest'>	/**
+<span id='Models-Model-method-makeRequest'>	/**
 </span>	 * Creates a generic request.
 	 * @private
 	 * 
@@ -277,8 +276,9 @@ module.exports = {
 		request.send(JSON.stringify(data))
 	},
 	
-<span id='Model-method-validate'>	/**
+<span id='Models-Model-method-validate'>	/**
 </span>	 * Validates each of the model's fields
+	 * @return {Boolean} if all the fields are correct
 	 * TODO: implement this shit
 	 */
 	validate: function() {
