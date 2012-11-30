@@ -33,4 +33,4 @@ trademarks of Appcelerator, Inc.
 [mongo]:http://support.mongolab.com/entries/20433053-rest-api-for-mongodb
 [underscore]:http://underscorejs.org
 [date]:http://code.google.com/p/datejs/wiki/APIDocumentation
-[duck]:https://github.com/senchalabs/jsduck
+[duck]:https://github.com/senchalabs/jsduck/wiki
