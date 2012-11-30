@@ -20,19 +20,26 @@
 	
 <span id='User-method-constructor'><span id='User'>/**
 </span></span> * @class User
- * @member Models
- * Implementation of &quot;users&quot; collection
+ * @extends Model
+ * Implementation of &quot;users&quot; collection.
+ * Representation of an app user in the database. Should have a {@link Group}.
  * 
  * @constructor
  * Creates a User object based on an ID or an Object with the fields
  * @param {String/Object} idOrProperties User ID or object properties. If ID, does a {@link User#find};
  * 		if property, calls {@link Model#setFields}
- * @param {Function} callback to be called after {@link User#find} or {@link Model#setFields}
+ * @param {Function} callback (optional) to be called after {@link User#find} or {@link Model#setFields}
  */
-(function User (idOrProperties, callback) {
+function User (idOrProperties, callback) {
 	
+<span id='User-property-COLLECTION'>	/** Collection name
+</span>	 * @type {String} */
 	this.COLLECTION = 'users'
 	
+<span id='User-property-fields'>	/** Collection fields
+</span>	 * @property fields
+	 * @protected
+	 * @type {Array} */
 	this.fields = [
 		'id',
 		'name',
@@ -58,7 +65,7 @@
 		break
 	}
 		
-})()
+}
 
 _.extend(User.prototype, Model)
 

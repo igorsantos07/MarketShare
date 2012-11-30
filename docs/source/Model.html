@@ -82,11 +82,13 @@ module.exports = {
 	 * @private */
 	_URL: _.template('https://api.mongolab.com/api/1/databases/marketshare/collections/&lt;%=collection%&gt;/&lt;%=id%&gt;?&lt;%=queryString%&gt;&amp;apiKey='+config.API_KEY),
 	
-<span id='Model-property-TIMEOUT'>	/** Default timeout */
-</span>	TIMEOUT: 5000,
+<span id='Model-property-TIMEOUT'>	/** Default timeout
+</span>	 * @protected */
+	TIMEOUT: 5000,
 	
-<span id='Model-property-REQUEST'>	/** Constants for each type of Request the API should understand */
-</span>	REQUEST: {
+<span id='Model-property-REQUEST'>	/** Constants for each type of Request the API should understand
+</span>	 * @private */
+	REQUEST: {
 		INSERT:  0,	//C
 		FIND:    1,	//R
 		UPDATE:  2,	//U
@@ -95,7 +97,8 @@ module.exports = {
 	},
 	
 <span id='Model-property-fields'>	/** Should be overriden by the upper models to list its fields
-</span>	 * @type {Array} */
+</span>	 * @type {Array}
+	 * @protected */
 	fields: ['id'],
 	
 <span id='Model-method-setFields'>	/**
@@ -116,9 +119,9 @@ module.exports = {
 	
 <span id='Model-method-findById'>	/**
 </span>	 * Finds a Model by its ID
-	 * @param {String} collection
-	 * @param {String} id
-	 * @param {Function} callback
+	 * @param {String} collection the collection name
+	 * @param {String} id the ObjectID for the required item
+	 * @param {Function} callback (optional) a function to be called when the operation is done. Receives as argument a simple Object with the item's properties
 	 */
 	findById: function(collection, id, callback) {
 		this.makeRequest(collection, this.REQUEST.FIND, {id: id}, null, callback)
@@ -126,9 +129,9 @@ module.exports = {
 	
 <span id='Model-method-find'>	/**
 </span>	 * Finds only one Model by a variable query. If you need many, use {@link Model#findAll}
-	 * @param {String} collection
+	 * @param {String} collection the collection name
 	 * @param {Object} query an object with each field that should be passed as a MongoDB query
-	 * @param {Function} callback
+	 * @param {Function} callback (optional) a function to be called when the operation is done. Receives as argument a simple Object with the item's properties
 	 */
 	find: function(collection, query, callback) {
 		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: true}, callback)
@@ -136,9 +139,9 @@ module.exports = {
 	
 <span id='Model-method-findAll'>	/**
 </span>	 * Finds all Models that matches a query. If you need only one, use {@link Model#find}
-	 * @param {String} collection
+	 * @param {String} collection the collection name
 	 * @param {Object} query an object with each field that should be passed as a MongoDB query
-	 * @param {Function} callback
+	 * @param {Function} callback (optional) a function to be called when the operation is done. Receives as argument the array of simple Objects
 	 */
 	findAll: function(collection, query, callback) {
 		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: false}, callback)
@@ -146,9 +149,9 @@ module.exports = {
 	
 <span id='Model-method-save'>	/**
 </span>	 * Saves the current model state in the database.
-	 * @param {String} collection
+	 * @param {String} collection the collection name
 	 * @param {Object} obj The upper classes should send themselves here
-	 * @param {Function} callback
+	 * @param {Function} callback (optional) a function to be called when the operation is done. Receives as argument the own {@link Model Model object}
 	 */
 	save: function(collection, obj, callback) {
 		var data = {}
@@ -167,6 +170,16 @@ module.exports = {
  ************************************************ INTERNAL METHODS ************************************************ 
  */
 	
+<span id='Model-method-mountUrl'>	/**
+</span>	 * Creates the basic URL needed for a database request.
+	 * @requires {@link Model#_URL Requires \_URL}
+	 * @private
+	 * 
+	 * @param {String} collection the collection name
+	 * @param {String} id (optional) the id to be used when the request is related to only one object
+	 * @param {Object} queryString (optional) all parameters for the queryString
+	 * @return {String} the complete URL, ready for a request
+	 */
 	mountUrl: function(collection, id, queryString) {
 		//verifying parameters to make sure no one is empty
 		if (!collection) throw { name: 'ArgumentError', message: 'collection not specified!' }
@@ -193,28 +206,28 @@ module.exports = {
 	 * 
 	 * @param {String} collection name of the collection (table) to operate on
 	 * @param {const} requestType one of Model.REQUEST constants
-	 * @param {Object} data [optional] an object or an array of objects, depending on the request type.
+	 * @param {Object} data (optional) an object or an array of objects, depending on the request type.
 	 * You can add here a special property &quot;id&quot; that would hold the object _id; this can be used
 	 * to perform finds, updates, replaces and deletes, and it has higher precedence than the 
 	 * queryString.query.id (aka queryString.query.id will be replaced if data.id is present)
-	 * @param {Object} queryString [optional] additional query string arguments, organized in a hash
-	 * @param {Function} callback [optional] called when the request is successful. Receives as argument the object returned by the request
+	 * @param {Object} queryString (optional) additional query string arguments, organized in a hash
+	 * @param {Function} callback (optional) called when the request is successful. Receives as argument the object returned by the request
 	 * 
-	 * @todo support DELETE verb using «id» URL param (currently Delete operations are done through replacing with {})
+	 * TODO: support DELETE verb using «id» URL param (currently Delete operations are done through replacing with {})
 	 */
 	makeRequest: function(collection, requestType, data, queryString, callback) {
 		if (!_.contains(this.REQUEST, requestType))
 			throw { name: 'ArgumentError', message: 'request should be one of the Model.request constants.' }
 		
 		var response, request = Ti.Network.createHTTPClient({
-			timeout: this.timeout,
+			timeout: this.TIMEOUT,
 			autoEncodeUrl: false, //TODO is this really needed?
 			onload: function(source) {
 				response = JSON.parse(this.responseText)
 				if (response == null) response = {}
 				Ti.API.info(&quot;Response was [&quot;+typeof response+']: '+JSON.stringify(response))
 				if (_.contains([200, 201], this.status)) {
-                    callback(response)
+                    if (_.isFunction(callback)) callback(response)
                 }				    
 		        else {
 					throw { name: 'RequestError', message: '['+this.status+'] '+this.statusText+': ' }
@@ -266,7 +279,7 @@ module.exports = {
 	
 <span id='Model-method-validate'>	/**
 </span>	 * Validates each of the model's fields
-	 * @TODO implement this shit
+	 * TODO: implement this shit
 	 */
 	validate: function() {
 		return true

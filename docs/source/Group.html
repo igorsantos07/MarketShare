@@ -18,34 +18,33 @@
   <pre class="prettyprint lang-js">var _ = require('lib/underscore-1.4.2')._,
 	Model = require('models/Model')
 	
-<span id='List-method-constructor'><span id='List'>/**
-</span></span> * @class List
+<span id='Group-method-constructor'><span id='Group'>/**
+</span></span> * @class Group
  * @extends Model
- * Implementation of &quot;lists&quot; collection.
- * Holds products to be bought, and should belongs to a {@link Group}.
+ * Implementation of &quot;groups&quot; collection.
+ * Representation of a group of users, sharing expenses.
  * 
  * @constructor
- * Creates a List object based on an ID or an Object with the fields
- * @param {String/Object} idOrProperties List ID or object properties. If ID, does a {@link List#find};
+ * Creates a Group object based on an ID or an Object with the fields
+ * @param {String/Object} idOrProperties Group ID or object properties. If ID, does a {@link Group#find};
  * 		if property, calls {@link Model#setFields}
- * @param {Function} callback (optional) to be called after {@link List#find} or {@link Model#setFields}
+ * @param {Function} callback (optional) to be called after {@link Group#find} or {@link Model#setFields}
  */
-function List (idOrProperties, callback) {
+function Group (idOrProperties, callback) {
 	
-<span id='List-property-COLLECTION'>	/** Collection name
+<span id='Group-property-COLLECTION'>	/** Collection name
 </span>	 * @type {String} */
-	this.COLLECTION = 'lists'
+	this.COLLECTION = 'groups'
 	
-<span id='List-property-fields'>	/** Collection fields
+<span id='Group-property-fields'>	/** Collection fields
 </span>	 * @property fields
 	 * @protected
 	 * @type {Array} */
 	this.fields = [
 		'id',
 		'name',
-		'products',
-		'closed',
-		'paid'
+		'users',
+		'lists'
 	]
 
 	switch (typeof(idOrProperties)) {
@@ -64,64 +63,45 @@ function List (idOrProperties, callback) {
 			if (_.isFunction(callback)) callback(this)
 		break
 	}
-		
-}
+}		
 
-_.extend(List.prototype, Model)
 
-<span id='List-method-defaultName'>/**
-</span> * @method defaultName
- * Generates a default name for the list, to be used if none is given
- * when creating a new one.
- * @return {String} A date string in the format MM-DD HH:MM:SS
- */
-List.prototype.defaultName = function() {
-	var date = new Date(),
-		min = date.getMinutes(),
-		sec = date.getSeconds()
-		
-	return [/*date.getFullYear(), */date.getMonth()+1, date.getDate()].join('-') //with year the name is too long to fit in the title bar
-	        +' '+
-		    [date.getHours(), (min &lt; 10)? '0'+min : min, (sec &lt; 10)? '0'+sec : sec].join(':')
-}
+_.extend(User.prototype, Model)
 
 //TODO: Maybe all those overrides could be moved to the Model, using this.COLLECTION?
 
-<span id='List-method-findById'>/** 
+<span id='Group-method-findById'>/** 
 </span> * @method findById
  * @inheritdoc Model#findById
  */
-List.prototype.findById = function(id, callback) {
+User.prototype.findById = function(id, callback) {
 	Model.findById(this.COLLECTION, id, callback)
 }
 
-<span id='List-method-find'>/** 
+<span id='Group-method-find'>/** 
 </span> * @method find
  * @inheritdoc Model#find
  */
-List.prototype.find = function(query, callback) {
+User.prototype.find = function(query, callback) {
 	Model.find(this.COLLECTION, query, callback)
 }
 
-<span id='List-method-findAll'>/** 
+<span id='Group-method-findAll'>/** 
 </span> * @method findAll
  * @inheritdoc Model#findAll
  */
-List.prototype.findAll = function(query, callback) {
+User.prototype.findAll = function(query, callback) {
 	Model.findAll(this.COLLECTION, query, callback)
 }
 
-<span id='List-method-save'>/** 
+<span id='Group-method-save'>/** 
 </span> * @method save
  * @inheritdoc Model#save
  */
-List.prototype.save = function(callback) {
-	if (!this.name)
-		this.name = this.defaultName()
-		
+User.prototype.save = function(callback) {
 	Model.save(this.COLLECTION, this, callback)
 }
 
-module.exports = List</pre>
+module.exports = User</pre>
 </body>
 </html>
