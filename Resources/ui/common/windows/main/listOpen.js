@@ -56,18 +56,7 @@ module.exports = function(args) {
 			icon: Ti.Android.R.drawable.ic_menu_delete,
 			hidden: true,
 			click: function(e) { 
-				var confirm = Ti.UI.createAlertDialog({
-					titleid: 'sure',
-					messageid: 'confirmDeleteList',
-					buttonNames: [L('yes'), L('no')],
-					persistent: true,
-					cancel: 1
-				})
-				confirm.addEventListener('click', function(e) {
-					if (e.cancel === e.index || e.cancel === true) return
-					
-					if (e.index == 0) alert("should remove this list")
-				})
+				var confirm = ui.createConfirmDialog('sure', 'confirmDeleteList', function() { alert('should remove this list') })
 				confirm.show()
 			}
 		}

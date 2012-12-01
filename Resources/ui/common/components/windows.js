@@ -63,6 +63,36 @@ exports.createTabWindow = function(titleid, icon, properties) {
 	return win
 }
 
+/**
+ * @method createConfirmDialog
+ * Creates a confirm dialog, similar to javascript's confirm().
+ * @param {String} titleid The i18n key for the title
+ * @param {String} messageid The i18n key for the question
+ * @param {Function} callback What's going to happen when the user press OK/Yes
+ * @param {String} yesid (optional) i18n key for the "Yes" button. Defaults to `yes`
+ * @param {String} noid (optional) i18n key for the "No" button. Defaults to `no`
+ */
+exports.createConfirmDialog = function(titleid, messageid, callback, yesid, noid) {
+	yesid = yesid || 'yes'
+	noid  = noid  || 'no'
+	
+	var confirm = Ti.UI.createAlertDialog({
+		titleid: titleid,
+		messageid: messageid,
+		buttonNames: [L(yesid), L(noid)],
+		persistent: true,
+		cancel: 1
+	})
+	
+	confirm.addEventListener('click', function(e) {
+		if (e.cancel === e.index || e.cancel === true) return
+		
+		if (e.index == 0) callback()
+	})
+	
+	return confirm
+}
+
 /*
  * FIXME: showAsAction cannot be defined in the items dictionary; it doesn't get set for some odd reason
  * TODO: item.hidden is adding the item to the old menu, not in the collapsible button 
