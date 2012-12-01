@@ -3,6 +3,8 @@
 	<string name="appName">MarketShare</string>
 	<string name="save">Save</string>
 	<string name="go">Go</string>
+	<string name="ok">OK</string>
+	<string name="cancel">Cancel</string>
 	<string name="search">Search</string>
 	<string name="add">Add</string>
 	<string name="sure">Are you sure?</string>
@@ -32,6 +34,8 @@
 		<string name="newList">New List</string>
 		<string name="newItem">New Item</string>
 		<string name="RemoveList">Remove list</string>
+		<string name="editName">Edit list name</string>
+		<string name="newName">New name</string>
 		<string name="confirmDeleteList">Are you sure you want to delete this list?</string>
 		<string name="quantity">Quantity</string>
 		<string name="price">Price</string>

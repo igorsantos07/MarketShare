@@ -1,19 +1,20 @@
 module.exports = function(args) {
 	var _ = require('lib/underscore-1.4.2')._,
 		ui = require('ui/common/components/all'),
-		List = require('models/List')
+		List = require('models/List'),
+		list, win
 	
 	if (_.isObject(args[0])) {
-		var list = args[0],
-			win = ui.createMainWindow('', { title: list.name })
-			/* Had to create the win object here because, for some reason, the title was
-			 * only being overrided in the addListData function when called as callback (maybe
-			 * the window object was still being instatiated by Titanium when the code get to
-			 * win.setTitle()?) */
+		list = args[0]
+		win = ui.createMainWindow('', { title: list.name })
+		/* Had to create the win object here because, for some reason, the title was
+		 * only being overrided in the addListData function when called as callback (maybe
+		 * the window object was still being instatiated by Titanium when the code get to
+		 * win.setTitle()?) */
 	}
 	else {
-		var id = args[0],
-			win = ui.createMainWindow('loading')
+		id = args[0]
+		win = ui.createMainWindow('loading')
 	}
 	
 	var addListData = function(list) {
@@ -27,14 +28,15 @@ module.exports = function(args) {
 		}
 	}
 		
-	if (list) {
-		addListData(list)
-	}
-	else {
+	if (id) {
 		var list = new List()
-		list.findById(id, function(list) {
+		list.findById(id, function(data) {
+			list.setFields(data)
 			addListData(list)
 		})
+	}
+	else {
+		addListData(list)
 	}
 		
 	ui.setMenu(win, [
@@ -42,7 +44,17 @@ module.exports = function(args) {
 			itemId: 1,
 			titleid: 'editName',
 			icon: Ti.Android.R.drawable.ic_menu_edit,
-			click: function(e) { alert("Should prompt user for a new name") }
+			click: function(e) {
+				var renameDialog = ui.createPromptDialog('editName', 'newName',
+					{ autocapitalization: Ti.UI.TEXT_AUTOCAPITALIZATION_SENTENCES }, null,
+					function(newName) {
+					list.update({ name: newName }, function(newList) {
+						list.setFields(newList)
+						win.title = list.name
+					})
+				})
+				renameDialog.show()
+			}
 		},
 		{
 			itemId: 2,
