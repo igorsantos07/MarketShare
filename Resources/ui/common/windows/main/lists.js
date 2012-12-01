@@ -53,7 +53,6 @@ module.exports = function() {
 				icon: Ti.Android.R.drawable.ic_menu_add,
 				click: function(e) {
 					var list = new List({status: true}).save(function(newList) {
-						
 						ui.goTo('main/listOpen', newList)
 					})
 				}
