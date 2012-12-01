@@ -57,12 +57,67 @@ exports.createMainWindow = function(titleid, properties) {
 	}))
 }
 
+<span id='UI-Windows-method-createModalWindow'>/**
+</span> * @method createModalWindow
+ * Generates a window that floats over the others, being a little smaller than the screen
+ * and hovering over a dim background. Can be dismissed with the back button or through a custom
+ * event, calling `modal.close()`.
+ * Internally, it creates a window with semi-transparent background and adds to it a view that's
+ * going to act as the modal. This view receives `open()` and `close()` methods to ask his background
+ * to open and close. The background is accessible through `modal.bgWindow`.
+ * @param {String} titleid (optional) The i18n key for the title. Usually is not shown
+ * @param {Object} properties (optional) additional properties for the modal window
+ * @param {Object} bgProperties (optional) additional properties for the background
+ * @param {boolean} useScrollBg (optional) if the background should be scrollable, for when the modal
+ * is not going to fill the entire screen. Defaults to `false`
+ * @return {Ti.UI.View}
+ */
+exports.createModalWindow = function(titleid, properties, bgProperties, useScrollBg) {
+	//creating the modal view, the background window, and attaching them
+	var modal = Ti.UI.createView(_.defaults(properties || {}, {
+		width: '85%',
+		height: '90%',
+		backgroundColor: color.bgModal,
+		layout: 'vertical',
+	}))
+	
+	modal.bgWindow = exports.createWindow(titleid, _.defaults(bgProperties || {}, {
+		opacity: 0.65,
+		backgroundColor: color.bgOp,
+		navBarHidden: true
+	}))
+	if (useScrollBg) {
+		var scroll = Ti.UI.createScrollView()
+		scroll.add(modal)
+		modal.bgWindow.add(scroll)
+	}
+	else {
+		modal.bgWindow.add(modal)
+	}
+	
+	//adding custom methods to the view to work with the real window
+	modal.open = function() { this.bgWindow.open() }
+	modal.close = function() { this.bgWindow.close() }
+	
+	/* adding a stationary title to the window. If the dev adds later a ScrollView to it,
+	 * this title will still be visible */
+	modal.add(form.createLabel({
+		textid: titleid,
+		color: color.label,
+		backgroundColor: color.bgModal,
+		top: 10, left: 10, right: 10,
+		font: { fontSize: 20 }
+	}))
+	
+	return modal
+}
+
 <span id='UI-Windows-method-createTabWindow'>/**
 </span> * @method createTabWindow
  * Generates a window with an internal `containingTab` property, useful for attaching
  * this window to a TabGroup.
  * @param {String} titleid The i18n key for the title
- * @param {String} icon (optional) the icon to be used in the tab. Android 3.0+ tabs don't use icons anymore
+ * @param {String} icon (optional) icon to be used in the tab. Android 3.0+ tabs don't use icons anymore
  * @param {Object} properties (optional) additional properties for the section
  * @return {Ti.UI.Window}
  */
@@ -81,23 +136,65 @@ exports.createTabWindow = function(titleid, icon, properties) {
 	return win
 }
 
-exports.createPromptDialog = function(titleid, promptid, callback) {
-		var prompt = Ti.UI.createAlertDialog({
-			titleid: promptid,
-			messageid: titleid,
-			buttonNames: [L('go'), L('cancel')],
-			persistent: true,
-			cancel: 1
-		}),
-		promptField = form.createTextField()
-		//prompt.add(promptField)
+<span id='UI-Windows-method-createPromptDialog'>/**
+</span> * @method createPromptDialog
+ * Generates a modal with a text field and two buttons: OK and Cancel.
+ * The modal is dismissable with the Cancel or the HW Back button; OK calls a callback.
+ * @param {String} titleid The i18n key for the title
+ * @param {String} promptid The i18n key for the field label
+ * @param {Function} callback what's going to happen with the field value. The dialog will close
+ * imediatelly before the callback. It receives as argument the field value.
+ * @param {String} okid (optional) The i18n key for the OK button. Defaults to 'ok'
+ * @return {Ti.UI.View}
+ */
+exports.createPromptDialog = function(titleid, promptid, callback, okid) {
+	var spacing = 20,
+		okid = okid || 'ok'
+	
+	var prompt = exports.createModalWindow(titleid, { height: Ti.UI.SIZE, width: '90%' }, {}, true),
+		container = Ti.UI.createView({ width: '90%', layout: 'horizontal', height: Ti.UI.SIZE }),
+			field = form.createTextField({ width: '100%', backgroundColor: color.field.bgModal })
+			container.add(form.createFieldLabel({ textid: promptid, width: '100%', top: spacing }))
+			container.add(field)
+		prompt.add(container)
 		
-		prompt.addEventListener('click', function(e) {
-			if (e.cancel === e.index || e.cancel === true) return
-			if (e.index == 0) callback(e.text)
+		var totalWidth = Ti.Platform.displayCaps.platformWidth * 0.9,
+			btnWidth = (totalWidth - (spacing / 2) * 3) / 2, //total - half-space for lef/middle/right
+			btnBox = Ti.UI.createView({
+				width: '100%',
+				top: spacing,
+				bottom: spacing / 2,
+				left: 0, right: 0,
+				height: Ti.UI.SIZE,
+				layout: 'horizontal'
+			})
+				var okBtn = form.createButton({
+					titleid: okid,
+					width: btnWidth,
+					left: spacing / 2
+				})
+				var cancelBtn = form.createButton({
+					titleid: 'cancel',
+					width: btnWidth,
+					left: spacing / 2,
+					right: spacing / 2
+				})
+			btnBox.add(okBtn)
+			btnBox.add(cancelBtn)
+		prompt.add(btnBox)
+		
+		okBtn.addEventListener('click', function(e) {
+			prompt.close()
+			callback(field.value)
+		})
+		cancelBtn.addEventListener('click', function(e) {
+			prompt.close()
 		})
 		
-		return prompt
+	prompt.show = function() { this.open() }
+	prompt.hide = function() { this.close() }
+	
+	return prompt
 }
 
 <span id='UI-Windows-method-createConfirmDialog'>/**
@@ -151,7 +248,7 @@ exports.setMenu = function(win, items) {
 			_.each(items, function(item) {
 				var entry = e.menu.add({
 					showAsAction: item.hidden? Ti.Android.SHOW_AS_ACTION_NEVER : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
-					itemId: item.itemId || Math.floor(Math.random()*1001), //making sure that every item has an ID
+					itemId: item.itemId || Math.floor(Math.random()*1001), //every item needs an ID
 					title: L(item.titleid)
 				})
 				

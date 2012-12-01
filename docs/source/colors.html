@@ -17,12 +17,13 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var _ = require('lib/underscore-1.4.2')._,
 	color = {},
-	darkerGray	= '#212021',
-	darkGray	= '#4A4542',
-	gray		= '#B5B6B5',
+	darkerGray		= '#212021',
+	darkGray		= '#404040',
+	lightDarkGray	= '#494949',
+	gray			= '#B5B5B5',
 	//now some default colors just to use variables with everything
-	white		= 'white',
-	black		= 'black'
+	white			= '#F7F7F7',
+	black			= '#000000'
 
 <span id='UI-Colors'>/**
 </span> * @class UI.Colors
@@ -31,10 +32,12 @@
  */
 
 <span id='UI-Colors-property-bg'>/** @property {String} bg window background */
-</span><span id='UI-Colors-property-bgOp'>/** @property {String} bgOp to be used as semi-transparent background (&quot;shadow&quot;) for hovering windows */
+</span><span id='UI-Colors-property-bgOp'>/** @property {String} bgOp semi-transparent stage for modal windows */
+</span><span id='UI-Colors-property-bgModal'>/** @property {String} bgModal background of modal windows */
 </span><span id='UI-Colors-property-label'>/** @property {String} label field label */
 </span><span id='UI-Colors-property-text'>/** @property {String} text common text */
 </span><span id='UI-Colors-property-field.bg'>/** @property {String} field.bg text field background */
+</span><span id='UI-Colors-property-field.bgModal'>/** @property {String} field.bgModal modal text field background */
 </span><span id='UI-Colors-property-field.color'>/** @property {String} field.color text field font color */
 </span>
 switch (Titanium.Platform.name) {
@@ -42,12 +45,14 @@ switch (Titanium.Platform.name) {
 	case 'android':
 		color = {
 			bg: black,
-			bgOp: gray,
+			bgOp: black,
+			bgModal: '#292829',
 			label: white,
-			text: darkGray,
+			text: lightDarkGray,
 			field: {
 				bg: darkerGray,
-				color: white
+				color: white,
+				bgModal: darkGray
 			}
 		}
 	break;
@@ -58,11 +63,13 @@ switch (Titanium.Platform.name) {
 		color = {
 			bg: gray, //probably should be some kind of simple texture?
 			bgOp: black,
-			label: darkGray,
-			text: darkGray,
+			bgModal: darkerGray,
+			label: lightDarkGray,
+			text: lightDarkGray,
 			field: {
 				bg: white,
-				color: darkGray
+				color: lightDarkGray,
+				bgModal: white
 			}
 		}
 	break;
