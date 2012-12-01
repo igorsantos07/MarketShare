@@ -127,16 +127,21 @@ exports.createTabWindow = function(titleid, icon, properties) {
  * @param {String} promptid The i18n key for the field label
  * @param {Function} callback what's going to happen with the field value. The dialog will close
  * imediatelly before the callback. It receives as argument the field value.
+ * @param {Object} fieldProperties (optional) used to set things like capitalization and keyboard
+ * preferences for the prompt field. Defaults to `{}`
  * @param {String} okid (optional) The i18n key for the OK button. Defaults to 'ok'
  * @return {Ti.UI.View}
  */
-exports.createPromptDialog = function(titleid, promptid, callback, okid) {
+exports.createPromptDialog = function(titleid, promptid, fieldProperties, okid, callback) {
 	var spacing = 20,
 		okid = okid || 'ok'
 	
 	var prompt = exports.createModalWindow(titleid, { height: Ti.UI.SIZE, width: '90%' }, {}, true),
 		container = Ti.UI.createView({ width: '90%', layout: 'horizontal', height: Ti.UI.SIZE }),
-			field = form.createTextField({ width: '100%', backgroundColor: color.field.bgModal })
+			field = form.createTextField(_.defaults(fieldProperties, {
+				width: '100%',
+				backgroundColor: color.field.bgModal
+			}))
 			container.add(form.createFieldLabel({ textid: promptid, width: '100%', top: spacing }))
 			container.add(field)
 		prompt.add(container)
