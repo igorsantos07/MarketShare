@@ -16,7 +16,8 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var _ = require('lib/underscore-1.4.2')._,
-	color = require('ui/common/components/colors')
+	color = require('ui/common/components/colors'),
+	form = require('ui/common/components/forms')
 
 <span id='UI-Windows'>/**
 </span> * @class UI.Windows
@@ -78,6 +79,55 @@ exports.createTabWindow = function(titleid, icon, properties) {
 	if (icon != undefined) win.containingTab.setIcon(icon)
 
 	return win
+}
+
+exports.createPromptDialog = function(titleid, promptid, callback) {
+		var prompt = Ti.UI.createAlertDialog({
+			titleid: promptid,
+			messageid: titleid,
+			buttonNames: [L('go'), L('cancel')],
+			persistent: true,
+			cancel: 1
+		}),
+		promptField = form.createTextField()
+		//prompt.add(promptField)
+		
+		prompt.addEventListener('click', function(e) {
+			if (e.cancel === e.index || e.cancel === true) return
+			if (e.index == 0) callback(e.text)
+		})
+		
+		return prompt
+}
+
+<span id='UI-Windows-method-createConfirmDialog'>/**
+</span> * @method createConfirmDialog
+ * Creates a confirm dialog, similar to javascript's confirm().
+ * @param {String} titleid The i18n key for the title
+ * @param {String} messageid The i18n key for the question
+ * @param {Function} callback What's going to happen when the user press OK/Yes
+ * @param {String} yesid (optional) i18n key for the &quot;Yes&quot; button. Defaults to `yes`
+ * @param {String} noid (optional) i18n key for the &quot;No&quot; button. Defaults to `no`
+ */
+exports.createConfirmDialog = function(titleid, messageid, callback, yesid, noid) {
+	yesid = yesid || 'yes'
+	noid  = noid  || 'no'
+	
+	var confirm = Ti.UI.createAlertDialog({
+		titleid: titleid,
+		messageid: messageid,
+		buttonNames: [L(yesid), L(noid)],
+		persistent: true,
+		cancel: 1
+	})
+	
+	confirm.addEventListener('click', function(e) {
+		if (e.cancel === e.index || e.cancel === true) return
+		
+		if (e.index == 0) callback()
+	})
+	
+	return confirm
 }
 
 /*

@@ -59,7 +59,12 @@
 			itemId: 1,
 			titleid: 'editName',
 			icon: Ti.Android.R.drawable.ic_menu_edit,
-			click: function(e) { alert(&quot;Should prompt user for a new name&quot;) }
+			click: function(e) {
+				var renameDialog = ui.createPromptDialog('editName', 'newName', function(value) {
+					alert('typed: '+value)
+				})
+				renameDialog.show()
+			}
 		},
 		{
 			itemId: 2,
@@ -73,18 +78,7 @@
 			icon: Ti.Android.R.drawable.ic_menu_delete,
 			hidden: true,
 			click: function(e) { 
-				var confirm = Ti.UI.createAlertDialog({
-					titleid: 'sure',
-					messageid: 'confirmDeleteList',
-					buttonNames: [L('yes'), L('no')],
-					persistent: true,
-					cancel: 1
-				})
-				confirm.addEventListener('click', function(e) {
-					if (e.cancel === e.index || e.cancel === true) return
-					
-					if (e.index == 0) alert(&quot;should remove this list&quot;)
-				})
+				var confirm = ui.createConfirmDialog('sure', 'confirmDeleteList', function() { alert('should remove this list') })
 				confirm.show()
 			}
 		}
