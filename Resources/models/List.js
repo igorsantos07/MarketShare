@@ -105,4 +105,13 @@ List.prototype.save = function(callback) {
 	Model.save(this.COLLECTION, this, callback)
 }
 
+/** 
+ * @method update
+ * @inheritdoc Models.Model#update
+ */
+List.prototype.update = function(newData, callback) {
+	if (!this.id) throw { type: 'ArgumentError', message: 'The model has no ID' }
+	Model.update(this.COLLECTION, this.id, newData, callback)
+}
+
 module.exports = List

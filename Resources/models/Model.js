@@ -103,7 +103,8 @@ module.exports = {
 	 * Finds a Model by its ID
 	 * @param {String} collection the collection name
 	 * @param {String} id the ObjectID for the required item
-	 * @param {Function} callback (optional) a function to be called when the operation is done. Receives as argument a simple Object with the item's properties
+	 * @param {Function} callback (optional) a function to be called when the operation is done.
+	 * Receives as argument a simple Object with the item's properties
 	 */
 	findById: function(collection, id, callback) {
 		this.makeRequest(collection, this.REQUEST.FIND, {id: id}, null, callback)
@@ -113,7 +114,8 @@ module.exports = {
 	 * Finds only one Model by a variable query. If you need many, use {@link Models.Model#findAll}
 	 * @param {String} collection the collection name
 	 * @param {Object} query an object with each field that should be passed as a MongoDB query
-	 * @param {Function} callback (optional) a function to be called when the operation is done. Receives as argument a simple Object with the item's properties
+	 * @param {Function} callback (optional) a function to be called when the operation is done.
+	 * Receives as argument a simple Object with the item's properties
 	 */
 	find: function(collection, query, callback) {
 		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: true}, callback)
@@ -123,7 +125,8 @@ module.exports = {
 	 * Finds all Models that matches a query. If you need only one, use {@link Models.Model#find}
 	 * @param {String} collection the collection name
 	 * @param {Object} query an object with each field that should be passed as a MongoDB query
-	 * @param {Function} callback (optional) a function to be called when the operation is done. Receives as argument the array of simple Objects
+	 * @param {Function} callback (optional) a function to be called when the operation is done.
+	 * Receives as argument the array of simple Objects
 	 */
 	findAll: function(collection, query, callback) {
 		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: false}, callback)
@@ -133,7 +136,9 @@ module.exports = {
 	 * Saves the current model state in the database.
 	 * @param {String} collection the collection name
 	 * @param {Object} obj The upper classes should send themselves here
-	 * @param {Function} callback (optional) a function to be called when the operation is done. Receives as argument the own {@link Model Model object}
+	 * @param {Function} callback (optional) a function to be called when the operation is done.
+	 * Receives as argument the own {@link Model Model object}
+	 * TODO: verify if the replace is working correctly too
 	 */
 	save: function(collection, obj, callback) {
 		var data = {}
@@ -145,6 +150,18 @@ module.exports = {
 			obj.setFields(insertedData)
 			callback(obj)
 		})
+	},
+	
+	/**
+	 * Updates the current object in the database with new data.
+	 * @param {String} collection the collection name
+	 * @param {String} id the ID for the object being updated
+	 * @param {Object} newData the fields to be updated, with their values
+	 * @param {Function} callback (optional) a function to be called when the operation is done.
+	 * Receives as argument all the object fields, after updated.
+	 */
+	update: function(collection, id, newData, callback) {
+		this.makeRequest(collection, this.REQUEST.UPDATE, { $set: newData, id: id }, {}, callback)
 	},
 	
 	
@@ -193,7 +210,8 @@ module.exports = {
 	 * to perform finds, updates, replaces and deletes, and it has higher precedence than the 
 	 * queryString.query.id (aka queryString.query.id will be replaced if data.id is present)
 	 * @param {Object} queryString (optional) additional query string arguments, organized in a hash
-	 * @param {Function} callback (optional) called when the request is successful. Receives as argument the object returned by the request
+	 * @param {Function} callback (optional) called when the request is successful.
+	 * Receives as argument the object returned by the request
 	 * 
 	 * TODO: support DELETE verb using «id» URL param (currently Delete operations are done through replacing with {})
 	 */
@@ -236,12 +254,12 @@ module.exports = {
 		
 		var useId = null
 		if (_.has(data, 'id')) {
-			if (!queryString) {
+			if (_.isEmpty(queryString)) {
 				useId = data.id
 				data.id = undefined
 			}
 			else {
-				queryString.q = _.extend(queryString.q || {}, { id: data.id })
+				queryString.q = _.extend(queryString.q || {}, { _id: data.id })
 			}
 		}
 		
