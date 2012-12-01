@@ -1,5 +1,6 @@
 var _ = require('lib/underscore-1.4.2')._,
-	color = require('ui/common/components/colors')
+	color = require('ui/common/components/colors'),
+	form = require('ui/common/components/forms')
 
 /**
  * @class UI.Windows
@@ -37,6 +38,52 @@ exports.createMainWindow = function(titleid, properties) {
 	return exports.createWindow(titleid, _.defaults(properties || {}, {
 		navBarHidden: false
 	}))
+}
+
+/**
+ * @method createModalWindow
+ * Generates a window that floats over the others, being a little smaller than the screen
+ * and hovering over a dim background. Can be dismissed with the back button or through a custom
+ * event, calling `modal.close()`.
+ * Internally, it creates a window with semi-transparent background and adds to it a view that's
+ * going to act as the modal. This view receives `open()` and `close()` methods to ask his background
+ * to open and close. The background is accessible through `modal.bgWindow`.
+ * @param {String} titleid (optional) The i18n key for the title. Usually is not shown
+ * @param {Object} properties (optional) additional properties for the modal window
+ * @param {Object} bgProperties (optional) additional properties for the background
+ * @return Ti.UI.View
+ */
+exports.createModalWindow = function(titleid, properties, bgProperties) {
+	//creating the modal view, the background window, and attaching them
+	var modal = Ti.UI.createView(_.defaults(properties || {}, {
+		width: '85%',
+		height: '90%',
+		backgroundColor: color.bg,
+		layout: 'vertical',
+	}))
+	
+	modal.bgWindow = exports.createWindow(titleid, _.defaults(bgProperties || {}, {
+		opacity: 0.4,
+		backgroundColor: color.bgOp,
+		navBarHidden: true
+	}))
+	modal.bgWindow.add(modal)
+	
+	//adding custom methods to the view to work with the real window
+	modal.open = function() { this.bgWindow.open() }
+	modal.close = function() { this.bgWindow.close() }
+	
+	/* adding a stationary title to the window. If the dev adds later a ScrollView to it,
+	 * this title will still be visible */
+	modal.add(form.createLabel({
+		textid: titleid,
+		color: color.label,
+		backgroundColor: color.bg,
+		top: 10, left: 10, right: 10,
+		font: { fontSize: 20 }
+	}))
+	
+	return modal
 }
 
 /**

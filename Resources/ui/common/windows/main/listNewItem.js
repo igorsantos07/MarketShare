@@ -3,14 +3,10 @@ module.exports = function() {
 		_ = require("lib/underscore-1.4.2")._,
 		spacing = 20
 	
-	var bg = ui.createWindow('newItem', { opacity: 0.4, backgroundColor: ui.color.bgOp, navBarHidden: true })
-	var win = Ti.UI.createView({ width: '85%', height: '90%', backgroundColor: ui.color.bg })
+	var win = ui.createModalWindow('newItem')
 	
-	var container = Ti.UI.createScrollView({showVerticalScrollIndicator: true})
+	var container = Ti.UI.createScrollView({top: spacing / 2, showVerticalScrollIndicator: true})
 		var form = Ti.UI.createView({ width: '90%', layout: 'horizontal' })
-			
-			form.add(ui.createLabel({ textid: 'newItem', width: '100%', color: ui.color.label, top: spacing / 2, font: { fontSize: 20 }}))
-			
 			var name = ui.createTextField({width: '100%'})
 			form.add(ui.createFieldLabel({ textid: 'name', width: '100%', top: spacing }))
 			form.add(name)
@@ -26,7 +22,6 @@ module.exports = function() {
 			form.add(ui.createFieldLabel({ textid: 'category', width: '100%', top: spacing }))
 			form.add(category)
 			
-			//THIS SHOULD BE A LIST OF CHECKBOXES
 			var owners = ['Lucas', 'Valter', 'Igor'],
 				ownerChecks = []
 			form.add(ui.createFieldLabel({ textid: 'ownerss', width: '100%', top: spacing }))
@@ -46,17 +41,10 @@ module.exports = function() {
 		container.add(form)
 	win.add(container)
 	
-	bg.add(win)
-	bg.realWindow = win
-	
 	btnSave.addEventListener('click', function(e) {
 		alert('Going to add an item to the list.')
 		win.close()
 	})
 	
-	/**
-	 * add back button behavior
-	 */
-	
-	return bg
+	return win
 }
