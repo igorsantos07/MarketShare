@@ -52,7 +52,7 @@ module.exports = function() {
 				titleid: 'newList',
 				icon: Ti.Android.R.drawable.ic_menu_add,
 				click: function(e) {
-					var list = new List().save(function(newList) {
+					var list = new List({status: true}).save(function(newList) {
 						
 						ui.goTo('main/listOpen', newList)
 					})
