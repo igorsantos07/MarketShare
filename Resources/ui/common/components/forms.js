@@ -34,6 +34,22 @@ exports.createTextField = function(properties) {
 }
 
 /**
+ * @method createNoticeText
+ * Generates a {Ti.UI.Label} with bigger font, 80% width, centered, dimmed text to tell the user about
+ * a temporary information in the middle of the screen (like "this is empty for now, sorry").
+ * @param {String} textid The i18n key for the notice
+ */
+exports.createNoticeText = function(textid) {
+	return exports.createLabel({
+		textid: textid,
+		width: '80%',
+		textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
+		color: color.text,
+		font: { fontSize: 20 }
+	})
+}
+
+/**
  * @method createSimplePicker
  * Creates a picker with an array of simple strings/numbers.
  * @param {Array} data each option in the picker
@@ -111,4 +127,13 @@ exports.createButton = function(properties) {
 	return Ti.UI.createButton(_.defaults(properties || {}, {
 		borderRadius: 10
 	}))
+}
+
+/**
+ * @method selectOnFocus
+ * Adds a `focus` event listener that will select the field contents when the user focus it.
+ * @param {Ti.UI.TextField} field
+ */
+exports.selectOnFocus = function(field) {
+	field.addEventListener('focus', function(e) { field.setSelection(0, field.value.length) })
 }
