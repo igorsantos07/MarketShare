@@ -8,13 +8,7 @@ module.exports = function() {
 		var openLists, pendingLists, archivedLists,
 			lists = new List().findAll({}, function(lists) {
 				if (_.isEmpty(lists)) {
-					win.add(ui.createLabel({
-						textid: 'noListToShow',
-						width: '80%',
-						textAlign: Ti.UI.TEXT_ALIGNMENT_CENTER,
-						color: ui.color.text,
-						font: { fontSize: 20 }
-					}))
+					win.add(ui.createNoticeText('nolistToShow'))
 				}
 				else {
 					var thisList
