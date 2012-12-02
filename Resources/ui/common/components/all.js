@@ -29,6 +29,7 @@ for (i in parts) {
 }
 
 /** @property color
+ * Default UI colors to be used with the widgets.
  *  @type {UI.Colors}
  */
 exports.color = require('ui/common/components/colors')
