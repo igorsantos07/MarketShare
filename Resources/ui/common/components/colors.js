@@ -14,14 +14,14 @@ var _ = require('lib/underscore-1.4.2')._,
  * Uses different schemes depending on the current OS. 
  */
 
-/** @property {String} bg window background */
-/** @property {String} bgOp semi-transparent stage for modal windows */
-/** @property {String} bgModal background of modal windows */
-/** @property {String} label field label */
-/** @property {String} text common text */
-/** @property {String} field.bg text field background */
-/** @property {String} field.bgModal modal text field background */
-/** @property {String} field.color text field font color */
+/** @property {String} bg		window background */
+/** @property {String} bgOp		semi-transparent stage for modal windows */
+/** @property {String} bgModal	background of modal windows */
+/** @property {String} label	field label */
+/** @property {String} text		common text */
+/** @property {String} field.bg			text field background */
+/** @property {String} field.bgModal	modal text field background */
+/** @property {String} field.color		text field font color */
 
 switch (Titanium.Platform.name) {
 	
