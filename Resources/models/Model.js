@@ -161,7 +161,14 @@ module.exports = {
 	 * Receives as argument all the object fields, after updated.
 	 */
 	update: function(collection, id, newData, callback) {
-		this.makeRequest(collection, this.REQUEST.UPDATE, { $set: newData, id: id }, {}, callback)
+		var _newData = _(newData)
+		
+		if (_newData.has('$push') || _newData.has('$unset') || _newData.has('$set'))
+			_.extend(newData, { id: id })
+		else
+			newData = { $set: newData, id: id }
+			
+		this.makeRequest(collection, this.REQUEST.UPDATE, newData, {}, callback)
 	},
 	
 	
