@@ -24,6 +24,7 @@ var _ = require('lib/underscore-1.4.2')._,
 
 /**
  * @method createTableView
+ * Creates a TableView with transparent background.
  * @param {Object} properties (optional) additional properties for the table
  * @return {Ti.UI.TableView}
  */
@@ -34,7 +35,8 @@ exports.createTableView = function(properties) {
 }
 
 /**
- * @method createTableView
+ * @method createTableViewRow
+ * Creates a row for a TableView.
  * @param {Object} properties (optional) additional properties for the row
  * @return {Ti.UI.TableViewRow}
  */
@@ -45,7 +47,8 @@ exports.createTableViewRow = function(properties) {
 }
 
 /**
- * @method createTableView
+ * @method createTableViewSection
+ * Creates a section that contains TableViewRows and should be added to a table.
  * @param {String} titleid The i18n key for this section's title
  * @param {Object} properties (optional) additional properties for the section
  * @return {Ti.UI.TableViewSection}
