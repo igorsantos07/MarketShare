@@ -11,7 +11,8 @@ var _ = require('lib/underscore-1.4.2')._,
  * Creates a List object based on an ID or an Object with the fields
  * @param {String/Object} idOrProperties List ID or object properties. If ID, does a {@link Models.List#find};
  * 		if property, calls {@link Models.Model#setFields}
- * @param {Function} callback (optional) to be called after {@link Models.List#find} or {@link Models.Model#setFields}
+ * @param {Function/boolean} callback (optional) A function to be called after {@link Models.List#find}
+ * or {@link Models.Model#setFields}. If `false`, will not try to fill the missing fields with a find call.
  */
 function List (idOrProperties, callback) {
 	
@@ -35,10 +36,11 @@ function List (idOrProperties, callback) {
 		case 'string':
 			if (idOrProperties.length == 24) { //pretty much reliable that this is a mongo ObjectID
 				this.id = idOrProperties
-				this.findById(this.id, function(data) {
-					if (_.isFunction(callback))
-						callback(data)
-				})
+				if (callback !== false && callback !== 0) {
+					this.findById(this.id, function(data) {
+						if (_.isFunction(callback)) callback(data)
+					})
+				}
 			}
 		break
 		
@@ -66,6 +68,10 @@ List.prototype.defaultName = function() {
 	return [/*date.getFullYear(), */date.getMonth()+1, date.getDate()].join('-') //with year the name is too long to fit in the title bar
 	        +' '+
 		    [date.getHours(), (min < 10)? '0'+min : min, (sec < 10)? '0'+sec : sec].join(':')
+}
+
+List.prototype.addProduct = function(product, callback) {
+	this.update({$push: { products: product }}, callback)
 }
 
 //TODO: Maybe all those overrides could be moved to the Model, using this.COLLECTION?
