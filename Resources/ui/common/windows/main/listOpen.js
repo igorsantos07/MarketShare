@@ -2,7 +2,7 @@ module.exports = function(args) {
 	var _ = require('lib/underscore-1.4.2')._,
 		ui = require('ui/common/components/all'),
 		List = require('models/List'),
-		list, win
+		list, win, table, notice
 	
 	if (_.isObject(args[0])) {
 		list = args[0]
@@ -20,11 +20,16 @@ module.exports = function(args) {
 	var addListData = function(list) {
 		win.title = list.name
 		if (_.isArray(list.products) && list.products.length > 0) {
-			var tableData
+			var tableData = []
 			_.each(list.products, function(product) {
 				tableData.push({ title: product.name, productId: product.id })
 			})
-			var table = ui.createTableView({ data: tableData })
+			table = ui.createTableView({ data: tableData })
+			win.add(table)
+		}
+		else {
+			notice = ui.createNoticeText('noItemToShow') 
+			win.add(notice)
 		}
 	}
 		
@@ -38,6 +43,19 @@ module.exports = function(args) {
 	else {
 		addListData(list)
 	}
+	
+	win.addEventListener('productAdded', function(product) {
+		if (table)
+			table.appendRow({ title: product.name, productId: product.id })
+		else {
+			if (notice) {
+				win.remove(notice)
+				notice = null
+			}
+			list.products = [product]
+			addListData(list)				
+		}
+	})
 		
 	ui.setMenu(win, [
 		{
@@ -60,7 +78,7 @@ module.exports = function(args) {
 			itemId: 2,
 			titleid: 'newItem',
 			icon: Ti.Android.R.drawable.ic_menu_add,
-			click: function(e) { ui.goTo('main/listNewItem') }
+			click: function(e) { ui.goTo('main/listNewItem', list.id, win) }
 		},
 		{
 			itemId: 3,

@@ -1,7 +1,23 @@
-module.exports = function() {
-	var ui = require("ui/common/components/all"),
-		_ = require("lib/underscore-1.4.2")._,
-		spacing = 20
+/**
+ * @class Windows.Main.ListNewItem
+ * New item modal window.
+ * 
+ * @constructor
+ * @param {Object} params Should contain the following items:  
+ * 0. the list ID  
+ * 1. the parent window (that contains the product's table and an event `addItem`)  
+ * 
+ * @return {Ti.UI.View}
+ */
+module.exports = function(params) {
+	var _ = require("lib/underscore-1.4.2")._,
+		ui = require("ui/common/components/all"),
+		List = require('models/List'),
+		spacing = 20,
+		listId = params[0],
+		parent = params[1]
+	
+	ui.color.field.bg = ui.color.field.bgModal
 	
 	var win = ui.createModalWindow('newItem')
 	
@@ -13,20 +29,26 @@ module.exports = function() {
 			
 			form.add(ui.createFieldLabel({ textid: 'quantity', width: '45%', top: spacing }))
 			form.add(ui.createFieldLabel({ textid: 'price', width: '45%', top: spacing, left: '10%' }))
-			var quantity = ui.createTextField({width: '45%', keyboardType: Ti.UI.KEYBOARD_DECIMAL_PAD})
+			var quantity = ui.createTextField({width: '45%', value: '1', keyboardType: Ti.UI.KEYBOARD_DECIMAL_PAD})
 			form.add(quantity)
 			var price = ui.createTextField({width: '45%', left: '10%', keyboardType: Ti.UI.KEYBOARD_DECIMAL_PAD})
 			form.add(price)
+			ui.selectOnFocus(quantity)
+			ui.selectOnFocus(price)
 			
 			var category = ui.createSimplePicker(['cat1', 'cat2', 'cat3'], {}, true)
 			form.add(ui.createFieldLabel({ textid: 'category', width: '100%', top: spacing }))
 			form.add(category)
 			
-			var owners = ['Lucas', 'Valter', 'Igor'],
+			var owners = [
+				{name: 'Lucas', id: 10},
+				{name: 'Valter', id: 5},
+				{name: 'Igor', id: 457}	
+			],
 				ownerChecks = []
 			form.add(ui.createFieldLabel({ textid: 'ownerss', width: '100%', top: spacing }))
 			_.each(owners, function(owner, i) {
-				ownerChecks[i] = ui.createCheckbox(owner, { right: 5 }, true)  
+				ownerChecks[i] = ui.createCheckbox(owner.name, { right: 5, ownerId: owner.id }, true)  
 				form.add(ownerChecks[i])
 			})
 			
@@ -42,9 +64,22 @@ module.exports = function() {
 	win.add(container)
 	
 	btnSave.addEventListener('click', function(e) {
-		alert('Going to add an item to the list.')
-		win.close()
+		var list = new List(listId, false),
+			product = {
+				name: name.value,
+				quantity: parseInt(quantity.value) || 1,
+				price: parseFloat(price.value) || undefined,
+				category: category.getSelectedRow(0).title
+			}
+			product.owners = _(ownerChecks)
+				.filter(function(check) { return check.value })
+				.map(function(owner) { return { owner: owner.title, id: owner.ownerId, quantity: product.quantity }})
+		
+		list.addProduct(product, function(list) {
+			parent.fireEvent('productAdded', product)
+			win.close()
+		})
 	})
-	
+
 	return win
 }

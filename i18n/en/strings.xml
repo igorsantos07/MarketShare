@@ -30,8 +30,10 @@
 		<string name="openLists">Open Lists</string>
 		<string name="pendingLists">Pending Payment Lists</string>
 		<string name="archivedLists">Archived Lists</string>
-		<string name="noListToShow">There's no list to show! Why don't you create one using the menu/action \u2295 button?</string>
-		<string name="newList">New List</string>
+		<string name="noListToShow">There's no list to show! Why don't you create one with the menu/action \u2295 button?</string>
+		
+	<string name="newList">New List</string>
+		<string name="noItemToShow">There's no item here! Why don't you add one with the menu/action \u2295 button?</string>
 		<string name="newItem">New Item</string>
 		<string name="RemoveList">Remove list</string>
 		<string name="editName">Edit list name</string>
