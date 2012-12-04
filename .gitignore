@@ -1,6 +1,7 @@
 tmp
 build*
 *.lock
+Thumbs.db*
 
 # Titanium Studio stuff
 .project
