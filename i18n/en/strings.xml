@@ -37,6 +37,7 @@
 		<string name="noItemToShow">There's no item here! Why don't you add one with the menu/action \u2295 button?</string>
 		<string name="ImShopping">I'm shopping now!</string>
 		<string name="ImFinished">I'm finished with this</string>
+		<string name="nowYouCanCheck">You can now tap the items to check them. A long press open the item details.</string>
 		<string name="newItem">New Item</string>
 		<string name="RemoveList">Remove list</string>
 		<string name="editName">Edit list name</string>

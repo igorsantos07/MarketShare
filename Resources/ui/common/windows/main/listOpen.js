@@ -1,54 +1,14 @@
 module.exports = function(args) {
 	var _ = require('lib/underscore-1.4.2')._,
 		ui = require('ui/common/components/all'),
-		List = require('models/List'),
-		win = ui.createMainWindow('loading'),
+		List = require('models/List'),	
+		list = new List(),
 		firstRun = true,
-		list, id, table, notice
-	
-	var addListData = function(list) {
-		win.title = list.name
+		win = ui.createMainWindow('', { title: list.name }),
+		table, notice
 		
-		if (_.isArray(list.products) && list.products.length > 0) {
-			var tableData = []
-			_.each(list.products, function(product) {
-				tableData.push({ title: product.name, productId: product.id })
-			})
-			table = ui.createTableView({ data: tableData })
-			win.add(table)
-			setRowEvents(list)
-		}
-		else {
-			notice = ui.createNoticeText('noItemToShow') 
-			win.add(notice)
-		}
-	}
-	
-	if (_.isObject(args[0])) {
-		list = args[0]
-		addListData(list)
-	}
-	else {
-		list = new List()
-		list.findById(args[0], function(data) {
-			list.setFields(data)
-			addListData(list)
-		})
-	}
-	
-	win.addEventListener('productAdded', function(product) {
-		if (table)
-			table.appendRow({ title: product.name, productId: product.id })
-		else {
-			if (notice) {
-				win.remove(notice)
-				notice = null
-			}
-			list.products = [product]
-			addListData(list)
-		}
-	})
-	
+	list.setFields(args[0])
+
 	var rowChangeCheck = function(e) {
 		e.row.hasCheck = !e.row.hasCheck
 	}
@@ -81,19 +41,55 @@ module.exports = function(args) {
 		})
 	}
 	
+	if (_.isArray(list.products) && list.products.length > 0) {
+		var tableData = []
+		_.each(list.products, function(product) {
+			tableData.push({ title: product.name, productId: product.id })
+		})
+		table = ui.createTableView({ data: tableData })
+		win.add(table)
+		setRowEvents(list)
+	}
+	else {
+		notice = ui.createNoticeText('noItemToShow') 
+		win.add(notice)
+	}
+	
+	win.addEventListener('productAdded', function(product) {
+		if (table)
+			table.appendRow({ title: product.name, productId: product.id })
+		else {
+			if (notice) {
+				win.remove(notice)
+				notice = null
+			}
+			list.products = [product]
+			addListData(list)
+		}
+	})
+	
 	var shopping = {icon: 'images/icons/shopping.png', titleid: 'ImShopping'},
-		finished = {icon: 'images/icons/merge.png', titleid: 'ImFinished'} //FIXME: this icon!!!
+		finished = {icon: 'images/icons/calc.png', titleid: 'ImFinished'}
+		
+	switch (list.status) {
+		case List.STATUS.OPEN:		var nextStatus = shopping; break
+		case List.STATUS.SHOPPING:	var nextStatus = finished; break
+		default:
+			var nextStatus = shopping
+			Ti.API.error('Unkown list status to define the icon for the next one')
+	}
+	
 	ui.setMenu(win, [
 		{
-			//FIXME: change icon depending on current status
-			titleid: shopping.titleid,
-			icon: shopping.icon,
+			titleid: nextStatus.titleid,
+			icon: nextStatus.icon,
 			click: function(e) {
 				if (list.status == List.STATUS.OPEN) {
 					changeListStatus(List.STATUS.SHOPPING, function() {
 						//TODO: we should change the icon too, but it's not allowed
 						//e.source.icon = finished.icon
-						e.source.title = L('yes')
+						Ti.UI.createNotification({message: L('nowYouCanCheck'), duration: Ti.UI.NOTIFICATION_DURATION_LONG}).show()
+						e.source.title = L('finished')
 					})
 				}
 				else if (list.status == List.STATUS.SHOPPING) {
@@ -138,7 +134,7 @@ module.exports = function(args) {
 			}
 		}
 	])
-	
+
 	//TODO: add a window.activity.onPrepareOptionsMenu or something like this to hide the newItem if the list is closed
 	
 	return win

@@ -22,7 +22,7 @@ module.exports = function() {
 						else
 							thisList = (list.paid)? archivedLists : pendingLists
 						
-						var line = ui.createTableViewRow({ title: list.name, listId: list._id.$oid })
+						var line = ui.createTableViewRow({ title: list.name, list: list })
 						thisList.add(line)
 					})
 			
@@ -35,7 +35,7 @@ module.exports = function() {
 					win.add(table)
 					
 					table.addEventListener('click', function(e) {
-						ui.goTo('main/listOpen', e.row.listId)
+						ui.goTo('main/listOpen', e.row.list)
 					})
 				}
 			})
