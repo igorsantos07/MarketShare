@@ -242,11 +242,8 @@ module.exports = {
 				}
 			},
 			onerror: function(error) {
-				response = JSON.parse(this.responseText)
-				/* There's really nothing better to do with error;
-				 * I don't even know WHEN they would happen */
-				throw { name: 'RequestError', message: '['+this.status+'] '+response.message }
-		    	Ti.API.error(error.error)
+				alert(L('unavailable'))
+		    	Ti.API.error('MONGO ANSWERED ERROR '+this.status+': '+this.statusText)
 		    }
 		})
 		
