@@ -28,7 +28,7 @@ function List (idOrProperties, callback) {
 		'id',
 		'name',
 		'products',
-		'closed',
+		'status',
 		'paid'
 	]
 
@@ -53,6 +53,15 @@ function List (idOrProperties, callback) {
 }
 
 _.extend(List.prototype, Model)
+
+/** List of constants for statuses. The key is the value used in the database.
+ * @property STATUSES
+ * @static */
+List.STATUS = {
+	CLOSED	: 0,
+	OPEN	: 1,
+	SHOPPING: 2
+}
 
 /**
  * @method defaultName
