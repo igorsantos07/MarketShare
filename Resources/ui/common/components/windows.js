@@ -1,6 +1,8 @@
 var _ = require('lib/underscore-1.4.2')._,
 	color = require('ui/common/components/colors'),
-	form = require('ui/common/components/forms')
+	form = require('ui/common/components/forms'),
+	android = (Ti.Platform.name == 'android'),
+	iOS = (Ti.Platform.name == 'iphone' || Ti.Platform.name == 'ipad')
 
 /**
  * @class UI.Windows
@@ -257,7 +259,13 @@ exports.setMenu = function(win, items) {
 exports.goTo = function(windowName) {
 	var args = Array.prototype.slice.call(arguments)
 	windowName = args.shift() //removing windowName from the other arguments
+	
 	var win = require('ui/common/windows/'+windowName)(args)
-	win.open()
+	
+	var openParams = {}
+	if (android)	openParams.animated = true
+	if (iOS)		openParams.transition = Ti.UI.iPhone.AnimationStyle.FLIP_FROM_RIGHT
+	
+	win.open(openParams)
 	return win
 }
