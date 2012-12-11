@@ -20,7 +20,7 @@
 		ui = require('ui/common/components/all'),
 		List = require('models/List')
 	
-	var win = ui.createMainWindow('listsWindow', { exitOnClose: true })
+	var win = ui.createRootWindow('listsWindow')
 
 		var openLists, pendingLists, archivedLists,
 			lists = new List().findAll({}, function(lists) {
@@ -39,7 +39,7 @@
 						else
 							thisList = (list.paid)? archivedLists : pendingLists
 						
-						var line = ui.createTableViewRow({ title: list.name, listId: list._id.$oid })
+						var line = ui.createTableViewRow({ title: list.name, list: list })
 						thisList.add(line)
 					})
 			
@@ -52,7 +52,7 @@
 					win.add(table)
 					
 					table.addEventListener('click', function(e) {
-						ui.goTo('main/listOpen', e.row.listId)
+						ui.goTo('main/listOpen', e.row.list)
 					})
 				}
 			})
@@ -63,7 +63,7 @@
 				titleid: 'newList',
 				icon: Ti.Android.R.drawable.ic_menu_add,
 				click: function(e) {
-					var list = new List({status: true}).save(function(newList) {
+					var list = new List({ status: List.STATUS.OPEN }).save(function(newList) {
 						ui.goTo('main/listOpen', newList)
 					})
 				}

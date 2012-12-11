@@ -11,6 +11,7 @@
 	<string name="yes">Yes</string>
 	<string name="no">No</string>
 	<string name="loading">Loading...</string>
+	<string name="waitLoading">Wait a moment!\nI'm loading some data.</string>
 	<string name="unavailable">Server unavailable! :(\nWould you try again later?</string>
 	
 	<string name="loginWindow">Please login</string>

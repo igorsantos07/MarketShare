@@ -1,4 +1,5 @@
 var config = require('config/database'),
+	window = require('ui/common/components/windows'),
 	_ = require('lib/underscore-1.4.2')._
 
 /**
@@ -57,6 +58,7 @@ var config = require('config/database'),
  * * 404 - Wrong URL
  * * 405 - Wrong verb
  * * 415 - Lack of header `Content-Type: application/json;charset=utf-8`
+ * * 50X - Run to the hills! Mongolab crashed!! 
  */
 module.exports = {
 	/** Used internally to generate the final request URL
@@ -175,6 +177,42 @@ module.exports = {
 /*
  ************************************************ INTERNAL METHODS ************************************************ 
  */
+
+	/** Used on every request, to block UI for network updates
+	 * @type {Ti.UI.ActivityIndicator}
+	 * @private */
+	loading: window.createActivityIndicator(),
+	
+	/** Used to identify if there's already an activity indicator active'
+	 * @type {boolean}
+	 * @private */
+	withLoading: false,
+	
+	/**
+	 * Shows an activity indicator that blocks the UI
+	 * @private
+	 */
+	addLoading: function() {
+		if (Ti.App.currentWindow && !this.withLoading) {
+			if (!Ti.App.currentWindow.loading) {
+				Ti.App.currentWindow.loading = this.loading
+				Ti.App.currentWindow.add(Ti.App.currentWindow.loading)
+			}
+			Ti.App.currentWindow.loading.show()
+			this.withLoading = true
+		}
+	},
+	
+	/**
+	 * Removes the activity indicator blocking the UI
+	 * @private
+	 */
+	removeLoading: function() {
+		if (Ti.App.currentWindow && this.withLoading) {
+			Ti.App.currentWindow.loading.hide()
+			this.withLoading = false
+		}
+	},
 	
 	/**
 	 * Creates the basic URL needed for a database request.
@@ -197,7 +235,10 @@ module.exports = {
 		    _.each(queryString, function(data, key) {
 		    	if (typeof data == 'object' && data.length == 0) return
 		        var encodedData = encodeURIComponent((key == 'q')? JSON.stringify(data) : data)
-		        if (encodedData != '%7B%7D') //TODO I have no idea why _.isEmpty(data) when JSON.stringify(data) is {} returns false, so there's no way to avoid this workaround here
+		        
+		        //TODO I have no idea why _.isEmpty(data) when JSON.stringify(data) is {} returns false,
+		        //so there's no way to avoid this workaround here
+		        if (encodedData != '%7B%7D') 
 		        	qsParts.push(key+'='+encodedData)
 		    })
 		    queryString = qsParts.join('&')
@@ -226,6 +267,8 @@ module.exports = {
 		if (!_.contains(this.REQUEST, requestType))
 			throw { name: 'ArgumentError', message: 'request should be one of the Model.request constants.' }
 		
+		var that = this,
+			withLoading = false
 		var response, request = Ti.Network.createHTTPClient({
 			timeout: this.TIMEOUT,
 			autoEncodeUrl: false, //TODO is this really needed?
@@ -233,6 +276,9 @@ module.exports = {
 				response = JSON.parse(this.responseText)
 				if (response == null) response = {}
 				Ti.API.info("Response was ["+typeof response+']: '+JSON.stringify(response))
+				
+				that.removeLoading()
+				
 				if (_.contains([200, 201], this.status)) {
                     if (_.isFunction(callback)) callback(response)
                 }				    
@@ -241,10 +287,29 @@ module.exports = {
 			    	Ti.API.error(error.error) 
 				}
 			},
+			
 			onerror: function(error) {
+				that.removeLoading()
 				alert(L('unavailable'))
 		    	Ti.API.error('MONGO ANSWERED ERROR '+this.status+': '+this.statusText)
-		    }
+			},
+			
+			onreadystatechange: function() {
+				/*
+				 * FIXME: Not working,  Ti.Network.HTTPClient.* are all undefined. Probably fixed in a
+				 * newer SDK. Check back and remove the other calls to add/removeLoading()
+		   		switch (this.readyState) {
+			   		case Ti.Network.HTTPClient.UNSENT:
+			   		case Ti.Network.HTTPClient.OPENED:
+			   			that.addLoading()
+			   		break
+			   		
+			   		case Ti.Network.HTTPClient.DONE:
+			   			that.removeLoading()
+			   		break
+			   	}
+			   	*/
+			}
 		})
 		
 		var verb
@@ -278,6 +343,10 @@ module.exports = {
 		}
 		_.each(headers, function(value, title) { request.setRequestHeader(title, value) })
 
+		//a better place for this would be inside the onReadyStateChange callback method, but take a look
+		//at the comment there... :(
+		this.addLoading()
+		
 		request.send(JSON.stringify(data))
 	},
 	

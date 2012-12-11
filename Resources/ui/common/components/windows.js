@@ -235,6 +235,30 @@ exports.createConfirmDialog = function(titleid, messageid, callback, yesid, noid
 	return confirm
 }
 
+/**
+ * @method createActivityIndicator
+ * Creates a blocker activity indicator, to be used when the application is loading important data.
+ * 
+ * TODO: why the fuck is this creating an old android spinner?? An ICS spinner appears when using the
+ * ActivityIndicator
+ * 
+ * @param {String} messageid (optional) The i18n key for the message to be shown. Defaults to `waitLoading`
+ * @param {Object} properties (optional) additional properties for the indicator
+ * @return {Ti.UI.ActivityIndicator} This object have to be added to a view and then you have to call
+ * `show()`. After used, you should call `hide()` on it.
+ */
+exports.createActivityIndicator = function(messageid, properties) {
+	return Ti.UI.createActivityIndicator(_.defaults(properties || {}, {
+		backgroundColor: color.bg,
+		opacity: 0.5,
+		width: Ti.UI.FILL,
+		height: Ti.UI.FILL,
+		zIndex: 1,
+		style: (iOS)? Ti.UI.iPhone.ActivityIndicatorStyle.BIG : Ti.UI.ActivityIndicatorStyle.BIG,
+		messageid: messageid || 'waitLoading'
+	}))
+}
+
 /*
  * FIXME: showAsAction cannot be defined in the items dictionary; it doesn't get set for some odd reason
  * TODO: item.hidden is adding the item to the old menu, not in the collapsible button 

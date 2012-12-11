@@ -17,7 +17,9 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var _ = require('lib/underscore-1.4.2')._,
 	color = require('ui/common/components/colors'),
-	form = require('ui/common/components/forms')
+	form = require('ui/common/components/forms'),
+	android = (Ti.Platform.name == 'android'),
+	iOS = (Ti.Platform.name == 'iphone' || Ti.Platform.name == 'ipad')
 
 <span id='UI-Windows'>/**
 </span> * @class UI.Windows
@@ -45,8 +47,8 @@ exports.createWindow = function(titleid, properties) {
 <span id='UI-Windows-method-createMainWindow'>/**
 </span> * @method createMainWindow
  * Creates a window with almost the same behavior as {@link #createWindow}, except that in Android it
- * becomes a Heavyweight Window (aka Activity). Still needs the property `exitOnClose` if it should be
- * the root window.
+ * becomes a Heavyweight Window (aka Activity). If you need a root window, use {@link #createRootWindow},
+ * that adds the exitOnClose property.
  * @param {String} titleid The i18n key for the title
  * @param {Object} properties (optional) additional properties for the section
  * @return {Ti.UI.Window}
@@ -55,6 +57,24 @@ exports.createMainWindow = function(titleid, properties) {
 	return exports.createWindow(titleid, _.defaults(properties || {}, {
 		navBarHidden: false
 	}))
+}
+
+<span id='UI-Windows-method-createRootWindow'>/**
+</span> * @method createRootWindow
+ * Creates a window with almost the same behavior as {@link #createMainWindow} (a heavyweight/Activity
+ * when running in Android), but adds exitOnClose and sets this window as the current one in
+ * `Ti.App.currentWindow` - as this property is changed by {@link #goTo} but you'll never move from
+ * another window to a root one.
+ * @param {String} titleid The i18n key for the title
+ * @param {Object} properties (optional) additional properties for the section
+ * @return {Ti.UI.Window}
+ */
+exports.createRootWindow = function(titleid, properties) {
+	Ti.App.currentWindow = exports.createMainWindow(titleid, _.defaults(properties || {}, {
+		exitOnClose: true
+	}))
+	
+	return Ti.App.currentWindow
 }
 
 <span id='UI-Windows-method-createModalWindow'>/**
@@ -232,6 +252,30 @@ exports.createConfirmDialog = function(titleid, messageid, callback, yesid, noid
 	return confirm
 }
 
+<span id='UI-Windows-method-createActivityIndicator'>/**
+</span> * @method createActivityIndicator
+ * Creates a blocker activity indicator, to be used when the application is loading important data.
+ * 
+ * TODO: why the fuck is this creating an old android spinner?? An ICS spinner appears when using the
+ * ActivityIndicator
+ * 
+ * @param {String} messageid (optional) The i18n key for the message to be shown. Defaults to `waitLoading`
+ * @param {Object} properties (optional) additional properties for the indicator
+ * @return {Ti.UI.ActivityIndicator} This object have to be added to a view and then you have to call
+ * `show()`. After used, you should call `hide()` on it.
+ */
+exports.createActivityIndicator = function(messageid, properties) {
+	return Ti.UI.createActivityIndicator(_.defaults(properties || {}, {
+		backgroundColor: color.bg,
+		opacity: 0.5,
+		width: Ti.UI.FILL,
+		height: Ti.UI.FILL,
+		zIndex: 1,
+		style: (iOS)? Ti.UI.iPhone.ActivityIndicatorStyle.BIG : Ti.UI.ActivityIndicatorStyle.BIG,
+		messageid: messageid || 'waitLoading'
+	}))
+}
+
 /*
  * FIXME: showAsAction cannot be defined in the items dictionary; it doesn't get set for some odd reason
  * TODO: item.hidden is adding the item to the old menu, not in the collapsible button 
@@ -274,8 +318,15 @@ exports.setMenu = function(win, items) {
 exports.goTo = function(windowName) {
 	var args = Array.prototype.slice.call(arguments)
 	windowName = args.shift() //removing windowName from the other arguments
+	
 	var win = require('ui/common/windows/'+windowName)(args)
-	win.open()
+	Ti.App.currentWindow = win
+	
+	var openParams = {}
+	if (android)	openParams.animated = true
+	if (iOS)		openParams.transition = Ti.UI.iPhone.AnimationStyle.FLIP_FROM_RIGHT
+	
+	win.open(openParams)
 	return win
 }
 </pre>
