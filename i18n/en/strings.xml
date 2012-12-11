@@ -59,6 +59,8 @@
 		<string name="foundGroups">Found groups</string>
 		<string name="noGroupFound">No group was found :(</string>
 	
+	<string name="listSummary">List Summary</string>
+	
 	<string name="settingsWindow">Settings</string>
 
 </resources>

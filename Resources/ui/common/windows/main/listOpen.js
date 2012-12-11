@@ -94,11 +94,10 @@ module.exports = function(args) {
 				}
 				else if (list.status == List.STATUS.SHOPPING) {
 					changeListStatus(List.STATUS.CLOSED, function() {
-						//TODO: when opening the costs summary, try to close this window first, as we
-						//probably won't be able to hide this button from the ActionBar. Thus, when
-						//going back, at least if the user try to open the list again he will see the
-						//correct icons (as soon as we implement hiding this item given the list status)
-						alert('Now should call the Costs Summary')
+						list.close(function(closedList) {
+							win.close()
+							ui.goTo('main/listSummary', closedList)
+						})
 					})
 				}
 			}

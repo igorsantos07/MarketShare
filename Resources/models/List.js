@@ -1,5 +1,6 @@
 var _ = require('lib/underscore-1.4.2')._,
-	Model = require('models/Model')
+	Model = require('models/Model'),
+	Group = require('models/Group')
 	
 /**
  * @class Models.List
@@ -26,10 +27,12 @@ function List (idOrProperties, callback) {
 	 * @type {Array} */
 	this.fields = [
 		'id',
+		'group',
 		'name',
 		'products',
 		'status',
-		'paid'
+		'paid',
+		'summary'
 	]
 
 	switch (typeof(idOrProperties)) {
@@ -81,6 +84,53 @@ List.prototype.defaultName = function() {
 
 List.prototype.addProduct = function(product, callback) {
 	this.update({$push: { products: product }}, callback)
+}
+
+List.prototype.close = function(callback) {
+	/*
+	 * FIXME: should verify if all products have the prices before calling this method, or else it's useless
+	 * TODO: should receive a list of bought products, since not always every product in the list is found in the market
+	 */
+	var calculateCosts = function(list, callback) {
+		if (list.products && !_.isEmpty(list.products)) {
+			var group = new Group(list.group, function(group) {
+				costs = {}
+				_.each(group.users, function(user) {
+					costs[user.id.$oid] = { price: 0, firstName: user.firstName, lastName: user.lastName }
+				})
+				
+				_.each(list.products, function(product) {
+					var owners = {}
+					if (product.owners && !_.isEmpty(product.owners)) {
+						owners = product.owners	
+					}
+					else {
+						var qtdPerUser = product.quantity / group.users.length
+						_.each(group.users, function(user) {
+							owners.push({
+								user: { $oid: user.$oid },
+								quantity: qtdPerUser
+							})
+						})
+					}
+					
+					_.each(owners, function(owner) {
+						costs[owner.id.$oid].price += product.price * owner.quantity
+					})
+				})
+					
+				list.update({ summary: costs }, callback)
+			})
+		}
+	}
+	
+	if (this.status == List.STATUS.CLOSED)
+		calculateCosts(this, callback)
+	else
+		this.update({ status: List.STATUS.CLOSED }, function(newData) {
+			this.setFields(newData)
+			calculateCosts(this, callback)
+		})
 }
 
 //TODO: Maybe all those overrides could be moved to the Model, using this.COLLECTION?
