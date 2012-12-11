@@ -3,6 +3,6 @@
  */
 var hasUserCredentials = Ti.App.Properties.hasProperty('userId'),
 	initialWindow = 'ui/common/windows/'+((hasUserCredentials)? 'main/lists' : 'initial/login'),
-	win = require(initialWindow)
+	win = new require(initialWindow)()
 	
-new win().open()
+win.open()
