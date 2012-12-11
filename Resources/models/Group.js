@@ -49,7 +49,7 @@ function Group (idOrProperties, callback) {
 }		
 
 
-_.extend(User.prototype, Model)
+_.extend(Group.prototype, Model)
 
 //TODO: Maybe all those overrides could be moved to the Model, using this.COLLECTION?
 
@@ -57,7 +57,7 @@ _.extend(User.prototype, Model)
  * @method findById
  * @inheritdoc Models.Model#findById
  */
-User.prototype.findById = function(id, callback) {
+Group.prototype.findById = function(id, callback) {
 	Model.findById(this.COLLECTION, id, callback)
 }
 
@@ -65,7 +65,7 @@ User.prototype.findById = function(id, callback) {
  * @method find
  * @inheritdoc Models.Model#find
  */
-User.prototype.find = function(query, callback) {
+Group.prototype.find = function(query, callback) {
 	Model.find(this.COLLECTION, query, callback)
 }
 
@@ -73,7 +73,7 @@ User.prototype.find = function(query, callback) {
  * @method findAll
  * @inheritdoc Models.Model#findAll
  */
-User.prototype.findAll = function(query, callback) {
+Group.prototype.findAll = function(query, callback) {
 	Model.findAll(this.COLLECTION, query, callback)
 }
 
@@ -81,8 +81,8 @@ User.prototype.findAll = function(query, callback) {
  * @method save
  * @inheritdoc Models.Model#save
  */
-User.prototype.save = function(callback) {
+Group.prototype.save = function(callback) {
 	Model.save(this.COLLECTION, this, callback)
 }
 
-module.exports = User
+module.exports = Group
