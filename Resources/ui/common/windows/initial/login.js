@@ -4,7 +4,7 @@ module.exports = function() {
 		spacing = 10,
 		User = require('models/User')
 	
-	var win = ui.createMainWindow('loginWindow', { exitOnClose: true })
+	var win = ui.createRootWindow('loginWindow')
 	
 	var container = Ti.UI.createScrollView()
 		var loginBox = Ti.UI.createView({ width: '80%', layout: 'vertical' })

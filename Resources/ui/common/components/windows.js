@@ -30,8 +30,8 @@ exports.createWindow = function(titleid, properties) {
 /**
  * @method createMainWindow
  * Creates a window with almost the same behavior as {@link #createWindow}, except that in Android it
- * becomes a Heavyweight Window (aka Activity). Still needs the property `exitOnClose` if it should be
- * the root window.
+ * becomes a Heavyweight Window (aka Activity). If you need a root window, use {@link #createRootWindow},
+ * that adds the exitOnClose property.
  * @param {String} titleid The i18n key for the title
  * @param {Object} properties (optional) additional properties for the section
  * @return {Ti.UI.Window}
@@ -40,6 +40,24 @@ exports.createMainWindow = function(titleid, properties) {
 	return exports.createWindow(titleid, _.defaults(properties || {}, {
 		navBarHidden: false
 	}))
+}
+
+/**
+ * @method createRootWindow
+ * Creates a window with almost the same behavior as {@link #createMainWindow} (a heavyweight/Activity
+ * when running in Android), but adds exitOnClose and sets this window as the current one in
+ * `Ti.App.currentWindow` - as this property is changed by {@link #goTo} but you'll never move from
+ * another window to a root one.
+ * @param {String} titleid The i18n key for the title
+ * @param {Object} properties (optional) additional properties for the section
+ * @return {Ti.UI.Window}
+ */
+exports.createRootWindow = function(titleid, properties) {
+	Ti.App.currentWindow = exports.createMainWindow(titleid, _.defaults(properties || {}, {
+		exitOnClose: true
+	}))
+	
+	return Ti.App.currentWindow
 }
 
 /**
@@ -261,6 +279,7 @@ exports.goTo = function(windowName) {
 	windowName = args.shift() //removing windowName from the other arguments
 	
 	var win = require('ui/common/windows/'+windowName)(args)
+	Ti.App.currentWindow = win
 	
 	var openParams = {}
 	if (android)	openParams.animated = true

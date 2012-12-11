@@ -3,7 +3,7 @@ module.exports = function() {
 		ui = require('ui/common/components/all'),
 		List = require('models/List')
 	
-	var win = ui.createMainWindow('listsWindow', { exitOnClose: true })
+	var win = ui.createRootWindow('listsWindow')
 
 		var openLists, pendingLists, archivedLists,
 			lists = new List().findAll({}, function(lists) {
