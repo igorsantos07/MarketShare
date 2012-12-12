@@ -34,7 +34,8 @@
 		<string name="archivedLists">Archived Lists</string>
 		<string name="noListToShow">There's no list to show! Why don't you create one with the menu/action \u2295 button?</string>
 		
-	<string name="newList">New List</string>
+	<string name="products">Products</string>
+		<string name="newList">New List</string>
 		<string name="noItemToShow">There's no item here! Why don't you add one with the menu/action \u2295 button?</string>
 		<string name="ImShopping">I'm shopping now!</string>
 		<string name="ImFinished">I'm finished with this</string>
@@ -51,6 +52,8 @@
 		<string name="owners">Owners</string>
 		<string name="owner">Owner</string>
 	
+	<string name="listSummary">List Summary</string>
+	
 	<string name="groupsWindow">My groups</string>
 		<string name="newGroup">New Group</string>
 		<string name="joinGroup">Join Group</string>
@@ -58,8 +61,6 @@
 		<string name="searchFor">Search for:</string>
 		<string name="foundGroups">Found groups</string>
 		<string name="noGroupFound">No group was found :(</string>
-	
-	<string name="listSummary">List Summary</string>
 	
 	<string name="settingsWindow">Settings</string>
 

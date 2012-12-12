@@ -4,10 +4,8 @@ module.exports = function(args) {
 		List = require('models/List'),	
 		list = new List(args[0])
 	
-	var win = ui.createMainWindow('', { title: list.name, layout: 'vertical' })
+	var win = ui.createTabWindow('listSummary', { layout: 'vertical' })
 
-		win.add(ui.createLabel({ textid: 'listSummary', top: 10, left: 10, color: ui.color.label }))
-		
 		//TODO: html attr for iOS table rows probably won't work! we have to selectively remove the HTML here for iOS compat
 		var rowFormat = _.template('<b><%=name%></b>: <%=price%>'),
 			tableData = _.map(list.summary, function(user, id) {

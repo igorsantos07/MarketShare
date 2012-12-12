@@ -35,7 +35,8 @@ module.exports = function() {
 					win.add(table)
 					
 					table.addEventListener('click', function(e) {
-						ui.goTo('main/listOpen', e.row.list)
+						var window = (e.row.list.status == List.STATUS.CLOSED)? 'listClosed' : 'listProducts'
+						ui.goTo('main/'+window, e.row.list)
 					})
 				}
 			})
@@ -47,7 +48,7 @@ module.exports = function() {
 				icon: Ti.Android.R.drawable.ic_menu_add,
 				click: function(e) {
 					var list = new List({ status: List.STATUS.OPEN }).save(function(newList) {
-						ui.goTo('main/listOpen', newList)
+						ui.goTo('main/listProducts', newList)
 					})
 				}
 			},
