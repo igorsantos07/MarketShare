@@ -3,7 +3,7 @@
  * New item modal window.
  * 
  * @constructor
- * @param {Object} params Should contain the following items:  
+ * @param {Array} params Should contain the following items:  
  * 0. the list ID  
  * 1. the parent window (that contains the product's table and an event `addItem`)  
  * 
