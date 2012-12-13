@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<string name="appName">MarketShare</string>
+	<string name="save">Salvar</string>
+	<string name="go">Ir</string>
+	<string name="ok">OK</string>
+	<string name="cancel">Cancelar</string>
+	<string name="search">Buscar</string>
+	<string name="add">Adicionar</string>
+	<string name="sure">Tem certeza?</string>
+	<string name="yes">Sim</string>
+	<string name="no">Não</string>
+	<string name="loading">Carregando...</string>
+	<string name="waitLoading">Espera um minuto!\nTô carregando alguns dados.</string>
+	<string name="unavailable">Servidor indisponível! :(\Tenta de novo mais tarde?</string>
+	
+	<string name="loginWindow">Por favor, logue</string>
+		<string name="email">E-mail</string>
+		<string name="password">Senha</string>
+		<string name="login">Login</string>
+		<string name="neverUsed">Nunca usou antes?\nCrie uma conta aqui ▶</string>
+		<string name="newAccount">Novo Usuário</string>
+		<string name="invalidLogin">Senha ou e-mail inválidos</string>
+		<string name="passwordMismatch">O campo de senha não bate com a confirmação dela</string>
+		
+	<string name="newAccountWindow">Nova Conta</string>
+		<string name="name">Nome</string>
+		<string name="confirmPassword">Confirmar senha</string>
+		<string name="createLogin">Criar &amp; Logar</string>
+		
+	<string name="listsWindow">Listas de compras</string>
+		<string name="openLists">Listas Abertas</string>
+		<string name="pendingLists">Listas com Pagamento Pendente</string>
+		<string name="archivedLists">Listas Arquivadas</string>
+		<string name="noListToShow">Não tem lista pra mostrar aqui! Porque você não cria uma com o menu/botão \u2295?</string>
+		
+	<string name="products">Produtos</string>
+		<string name="newList">Nova lista</string>
+		<string name="noItemToShow">Não tem nenhum item aqui! Porque não adicionar um com o menu/botão \u2295?</string>
+		<string name="ImShopping">Vou comprar agora!</string>
+		<string name="ImFinished">Acabei aqui</string>
+		<string name="nowYouCanCheck">Você pode tocar nos itens para marcá-los. Um toque longo abre os detalhes.</string>
+		<string name="newItem">Novo item</string>
+		<string name="RemoveList">Apagar lista</string>
+		<string name="editName">Editar o nome da lista</string>
+		<string name="newName">Novo nome</string>
+		<string name="confirmDeleteList">Tem certeza que quer apagar essa lista?</string>
+		<string name="quantity">Quantidade</string>
+		<string name="price">Preço</string>
+		<string name="category">Categoria</string>
+		<string name="ownerss">Dono(s)</string>
+		<string name="owners">Donos</string>
+		<string name="owner">Dono</string>
+	
+	<string name="listSummary">Sumário da Lista</string>
+	
+	<string name="groupsWindow">Meus grupos</string>
+		<string name="newGroup">Novo grupo</string>
+		<string name="joinGroup">Entrar num grupo</string>
+		<string name="createJoin">Criar &amp; Entrar</string>
+		<string name="searchFor">Buscar por:</string>
+		<string name="foundGroups">Grupos encontrados</string>
+		<string name="noGroupFound">Nenhum grupo foi encontrado :(</string>
+	
+	<string name="settingsWindow">Configurações</string>
+
+</resources>
