@@ -11,7 +11,7 @@ var _ = require('lib/underscore-1.4.2')._,
  * @constructor
  * Creates a List object based on an ID or an Object with the fields
  * @param {String/Object} idOrProperties List ID or object properties. If ID, does a {@link Models.List#find};
- * 		if property, calls {@link Models.Model#setFields}
+ *        if property, calls {@link Models.Model#setFields}
  * @param {Function/boolean} callback (optional) A function to be called after {@link Models.List#find}
  * or {@link Models.Model#setFields}. If `false`, will not try to fill the missing fields with a find call.
  */

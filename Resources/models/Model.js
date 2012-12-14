@@ -93,7 +93,7 @@ module.exports = {
 	setFields: function(values) {
 		_.each(this.fields, function(field) {
 			if (field == 'id' && _.has(values, '_id')) {
-				this['id'] = values['_id']['$oid']
+				this.id = values._id.$oid
 			}
 			else {
 				this[field] = values[field]
@@ -274,7 +274,7 @@ module.exports = {
 			autoEncodeUrl: false, //TODO is this really needed?
 			onload: function(source) {
 				response = JSON.parse(this.responseText)
-				if (response == null) response = {}
+				if (response === null) response = {}
 				Ti.API.info("Response was ["+typeof response+']: '+JSON.stringify(response))
 				
 				that.removeLoading()
@@ -283,33 +283,33 @@ module.exports = {
                     if (_.isFunction(callback)) callback(response)
                 }				    
 		        else {
+					Ti.API.error(error.error)
 					throw { name: 'RequestError', message: '['+this.status+'] '+this.statusText+': ' }
-			    	Ti.API.error(error.error) 
 				}
 			},
 			
 			onerror: function(error) {
 				that.removeLoading()
 				alert(L('unavailable'))
-		    	Ti.API.error('MONGO ANSWERED ERROR '+this.status+': '+this.statusText)
-			},
+				Ti.API.error('MONGO ANSWERED ERROR '+this.status+': '+this.statusText)
+			}//,
 			
+		/*
+		 * FIXME: Not working,  Ti.Network.HTTPClient.* are all undefined. Probably fixed in a
+		 * newer SDK. Check back and remove the other calls to add/removeLoading()
 			onreadystatechange: function() {
-				/*
-				 * FIXME: Not working,  Ti.Network.HTTPClient.* are all undefined. Probably fixed in a
-				 * newer SDK. Check back and remove the other calls to add/removeLoading()
-		   		switch (this.readyState) {
-			   		case Ti.Network.HTTPClient.UNSENT:
-			   		case Ti.Network.HTTPClient.OPENED:
-			   			that.addLoading()
-			   		break
-			   		
-			   		case Ti.Network.HTTPClient.DONE:
-			   			that.removeLoading()
-			   		break
-			   	}
-			   	*/
+				switch (this.readyState) {
+					case Ti.Network.HTTPClient.UNSENT:
+					case Ti.Network.HTTPClient.OPENED:
+						that.addLoading()
+					break
+					
+					case Ti.Network.HTTPClient.DONE:
+						that.removeLoading()
+					break
+				}
 			}
+	   	*/
 		})
 		
 		var verb
