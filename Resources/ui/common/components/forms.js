@@ -53,7 +53,8 @@ exports.createNoticeText = function(textid) {
  * @method createSimplePicker
  * Creates a picker with an array of simple strings/numbers.
  * @param {Array} data each option in the picker
- * @param {Object} properties (optional)
+ * @param {Object} properties (optional) Accepts a special property called "selectedRow", that indicates
+ * the index that should be selected by default
  * @param {boolean} useTitle (optional) if the values are to be used as "title" or "titleid". Defaults to false
  * @return {Ti.UI.Picker}
  */
@@ -67,6 +68,10 @@ exports.createSimplePicker = function(data, properties, useTitle) {
 		rows[i] = Ti.UI.createPickerRow( useTitle? { title: data[i] } : { titleid: data[i] } )
 		
 	picker.add(rows)
+	
+	if (properties.selectedRow)
+		picker.setSelectedRow(0, properties.selectedRow, false)
+	
 	return picker
 }
 
@@ -74,7 +79,7 @@ exports.createSimplePicker = function(data, properties, useTitle) {
  * @method createCheckbox
  * Creates a switch object, forcing checkbox style in Android.
  * @param {String} titleid
- * @param {Object} properties (optional)
+ * @param {Object} properties (optional) 
  * @param {boolean} useTitle (optional) if titleid should be used as a raw title instead
  * @return {Ti.UI.Switch}
  */
