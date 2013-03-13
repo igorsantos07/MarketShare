@@ -1,0 +1,11 @@
+{
+	"--": "Resources/",
+	"--output": "docs",
+	
+	"--title": "MarketShare - docs",
+	"--ignore-global": true,
+	"--external": [
+		"const",
+		"Ti.*"
+	] 
+}
