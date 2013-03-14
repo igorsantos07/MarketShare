@@ -1,0 +1,58 @@
+issUse cases
+=========
+
+1. New User
+-----------
+1. User opens app
+2. App asks user's email and name (asking for the same email of an existing account)
+3. App silently registers user in database:  
+    3.1. App links to an existing user if the email already exists  
+    3.2. App creates new user if the email is new  
+    3.2.1. App creates empty "Default list" given the user locale
+
+2. User invites roommate*
+------------------------
+_* this could be made easier if the actual invite was sent directly through the network medium, and when the push notification arrived on the phone, the app would silently ignore it._
+
+1. User opens app
+2. User opens *Friends list*
+3. User opens *New friend window*
+4. User finds friend (search, Bluetooth, Wi-Fi, NFC)
+5. User sends invite
+5. Friend receives push notification
+6. Friend accepts invite
+7. App shows new friend in User *Friends list* screen
+
+3. New, special list
+--------------------
+1. User opens app
+2. User opens new list screen
+3. User types name
+4. App saves list
+5. App opens new list
+
+4. New stuff to buy
+-------------------
+1. User opens app
+2. User opens a list
+3. User opens new item screen
+4. User adds details
+5. User saves item
+
+5. Time to shop
+---------------
+1. User opens app
+2. User opens a list
+3. User presses Shopping button
+4. User marks some items as bought
+5. User finishes shopping
+6. App creates new pending-payment list  
+6.1. If the original list was custom, the new name is *«name» «timestamp»*  
+6.2. If the original list was the default, the new name is *«timestamp»*
+7. App moves bought items to the new list  
+7.1. If there's no more items in the original list:  
+7.1.1. If it's a custom list, it's deleted  
+7.1.2. If it's the default list, it's kept empty  
+7.2. If there's still items, they are kept in the list
+8. App calculates and display summary of the new list
+
