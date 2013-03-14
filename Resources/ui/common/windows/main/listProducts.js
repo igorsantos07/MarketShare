@@ -55,7 +55,7 @@ module.exports = function(args) {
 		})
 	}
 	
-	if (_.isArray(list.products) && list.products.length > 0) {
+	var addListData = function(list) {
 		var tableData = []
 		_.each(list.products, function(product) {
 			tableData.push({ title: product.name, productId: product.id })
@@ -63,6 +63,10 @@ module.exports = function(args) {
 		table = ui.createTableView({ data: tableData })
 		win.add(table)
 		setRowEvents(list)
+	}
+	
+	if (_.isArray(list.products) && list.products.length > 0) {
+		addListData(list)
 	}
 	else {
 		notice = ui.createNoticeText('noItemToShow') 
