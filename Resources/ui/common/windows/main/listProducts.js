@@ -148,8 +148,11 @@ module.exports = function(args) {
 				icon: Ti.Android.R.drawable.ic_menu_delete,
 				hidden: true,
 				click: function(e) { 
-					var confirm = ui.createConfirmDialog('sure', 'confirmDeleteList', function() { alert('should remove this list') })
-					confirm.show()
+					ui.createConfirmDialog('sure', 'confirmDeleteList', function() {
+						list.remove(function() {
+							win.close()
+						})
+					}).show()
 				}
 			}
 		])

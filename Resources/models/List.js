@@ -179,4 +179,8 @@ List.prototype.update = function(newData, callback) {
 	Model.update(this.COLLECTION, this.id, newData, callback)
 }
 
+List.prototype.remove = function(callback) {
+	Model.remove(this.COLLECTION, this.id, callback)
+}
+
 module.exports = List
