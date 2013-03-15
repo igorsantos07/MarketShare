@@ -276,11 +276,7 @@ exports.createActivityIndicator = function(messageid, properties) {
  */
 exports.setMenu = function(win, items) {
 	if (Titanium.Platform.name == 'android') {
-		//fixing a "bug" (TIMOB-1512) where the TabGroup action does not call onCreateOptionsMenu
-		if (win.constructor.name == 'TabGroup')
-			win = win.activeTab.window
-			
-		win.getActivity().onCreateOptionsMenu = function(e) {
+		win.activity.onCreateOptionsMenu = function(e) {
 			_.each(items, function(item) {
 				var entry = e.menu.add({
 					showAsAction: item.hidden? Ti.Android.SHOW_AS_ACTION_NEVER : Ti.Android.SHOW_AS_ACTION_IF_ROOM,
