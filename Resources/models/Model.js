@@ -173,6 +173,10 @@ module.exports = {
 		this.makeRequest(collection, this.REQUEST.UPDATE, newData, {}, callback)
 	},
 	
+	remove: function(collection, id, callback) {
+		this.makeRequest(collection, this.REQUEST.DELETE, {id: id}, {}, callback)
+	},
+	
 	
 /*
  ************************************************ INTERNAL METHODS ************************************************ 
@@ -233,13 +237,11 @@ module.exports = {
 		if (queryString) {
             var qsParts = []
 		    _.each(queryString, function(data, key) {
-		    	if (typeof data == 'object' && data.length == 0) return
-		        var encodedData = encodeURIComponent((key == 'q')? JSON.stringify(data) : data)
-		        
-		        //TODO I have no idea why _.isEmpty(data) when JSON.stringify(data) is {} returns false,
-		        //so there's no way to avoid this workaround here
-		        if (encodedData != '%7B%7D') 
+		    	if (typeof data == 'object' && _.keys(data).length == 0) return
+		    	else {
+					var encodedData = encodeURIComponent((key == 'q')? JSON.stringify(data) : data)        
 		        	qsParts.push(key+'='+encodedData)
+		        }
 		    })
 		    queryString = qsParts.join('&')
 		}
@@ -260,8 +262,6 @@ module.exports = {
 	 * @param {Object} queryString (optional) additional query string arguments, organized in a hash
 	 * @param {Function} callback (optional) called when the request is successful.
 	 * Receives as argument the object returned by the request
-	 * 
-	 * TODO: support DELETE verb using «id» URL param (currently Delete operations are done through replacing with {})
 	 */
 	makeRequest: function(collection, requestType, data, queryString, callback) {
 		if (!_.contains(this.REQUEST, requestType))
@@ -314,26 +314,27 @@ module.exports = {
 		
 		var verb
 		switch (requestType) {
-			case this.REQUEST.INSERT:	verb = 'POST';     break
-			case this.REQUEST.FIND:		verb = 'GET';      break
+			case this.REQUEST.INSERT:	verb = 'POST';   break
+			case this.REQUEST.FIND:		verb = 'GET';    break
 			case this.REQUEST.UPDATE:
-			case this.REQUEST.REPLACE:
-			case this.REQUEST.DELETE:   verb = 'PUT';     break
+			case this.REQUEST.REPLACE:	verb = 'PUT';    break
+			case this.REQUEST.DELETE:	verb = 'DELETE'; break	
 		}
 		
 		var useId = null
 		if (_.has(data, 'id')) {
 			if (_.isEmpty(queryString)) {
 				useId = data.id
-				data.id = undefined
+				data = _.omit(data, 'id')
 			}
 			else {
 				queryString.q = _.extend(queryString.q || {}, { _id: data.id })
 			}
 		}
+		dataString = (_.isEmpty(data))? '' : JSON.stringify(data)
 		
 		Ti.API.info('MONGO ['+verb+']: '+this.mountUrl(collection, useId, queryString))
-		if (verb != 'GET') Ti.API.info('Data sent: '+JSON.stringify(data))
+		if (verb != 'GET') Ti.API.info('Data sent: '+dataString)
 		
 		request.open(verb, this.mountUrl(collection, useId, queryString))
 		
@@ -347,7 +348,7 @@ module.exports = {
 		//at the comment there... :(
 		this.addLoading()
 		
-		request.send(JSON.stringify(data))
+		request.send(dataString)
 	},
 	
 	/**
