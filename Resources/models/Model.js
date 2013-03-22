@@ -1,6 +1,7 @@
 var config = require('config/database'),
 	window = require('ui/common/components/windows'),
-	_ = require('lib/underscore-1.4.2')._
+	_ = require('lib/underscore-1.4.2')._,
+	Q = require('lib/q')
 
 /**
  * @class Models.Model
@@ -101,68 +102,95 @@ module.exports = {
 		}, this)
 	},
 	
+	construct: function(idOrProps) {
+		var that = new this(),
+			deferred = Q.defer()
+			
+		switch (typeof(idOrProps)) {
+			case 'string':
+				if (idOrProps.length == 24) { //pretty much reliable that this is a mongo ObjectID
+					that.id = idOrProps
+					this.findById(that.id).then(function(userData) {
+						that.setFields(userData)
+						deferred.resolve(that)
+					})
+				}
+			break
+			
+			case 'object':
+				that.setFields(idOrProps)
+				deferred.resolve(that)
+			break
+		}
+		
+		return deferred.promise
+	},
+	
 	/**
 	 * Finds a Model by its ID
-	 * @param {String} collection the collection name
 	 * @param {String} id the ObjectID for the required item
-	 * @param {Function} callback (optional) a function to be called when the operation is done.
 	 * Receives as argument a simple Object with the item's properties
 	 */
-	findById: function(collection, id, callback) {
-		this.makeRequest(collection, this.REQUEST.FIND, {id: id}, null, callback)
+	findById: function(id) {
+		return this.makeRequest(this.COLLECTION, this.REQUEST.FIND, {id: id}, null)
 	},
 	
 	/**
 	 * Finds only one Model by a variable query. If you need many, use {@link Models.Model#findAll}
-	 * @param {String} collection the collection name
 	 * @param {Object} query an object with each field that should be passed as a MongoDB query
-	 * @param {Function} callback (optional) a function to be called when the operation is done.
 	 * Receives as argument a simple Object with the item's properties
+	 * TODO: Should encapsulate the promise inside another one and reject when nothing is found
 	 */
-	find: function(collection, query, callback) {
-		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: true}, callback)
+	find: function(query) {
+		return this.makeRequest(this.COLLECTION, this.REQUEST.FIND, {}, {q: query, fo: true})
 	},
 	
 	/**
 	 * Finds all Models that matches a query. If you need only one, use {@link Models.Model#find}
-	 * @param {String} collection the collection name
 	 * @param {Object} query an object with each field that should be passed as a MongoDB query
-	 * @param {Function} callback (optional) a function to be called when the operation is done.
 	 * Receives as argument the array of simple Objects
+	 * TODO: Should encapsulate the promise inside another one and reject when nothing is found
 	 */
-	findAll: function(collection, query, callback) {
-		this.makeRequest(collection, this.REQUEST.FIND, {}, {q: query, fo: false}, callback)
+	findAll: function(query) {
+		query = query || {}
+		return this.makeRequest(this.COLLECTION, this.REQUEST.FIND, {}, {q: query, fo: false})
+	},
+	
+	count: function(query) {
+		query = query || {}
+		return this.makeRequest(this.COLLECTION, this.REQUEST.FIND, {}, {q: query, c: true})
 	},
 	
 	/**
 	 * Saves the current model state in the database.
-	 * @param {String} collection the collection name
 	 * @param {Object} obj The upper classes should send themselves here
-	 * @param {Function} callback (optional) a function to be called when the operation is done.
 	 * Receives as argument the own {@link Model Model object}
 	 * TODO: verify if the replace is working correctly too
 	 */
-	save: function(collection, obj, callback) {
-		var data = {}
-		_.each(obj.fields, function(field) {
-			data[field] = this[field]
-		}, obj)
-		
-		this.makeRequest(collection, (data.id)? this.REQUEST.REPLACE : this.REQUEST.INSERT, data, {}, function(insertedData) {
-			obj.setFields(insertedData)
-			callback(obj)
-		})
+	saveData: function(data) {
+		return this.makeRequest(
+			this.COLLECTION,
+			(data.id)? this.REQUEST.REPLACE : this.REQUEST.INSERT,
+			_.pick(data, this.fields)
+		)
+	},
+	
+	save: function() {
+		var me = this
+		return this.saveData(this)
+			.then(function(userData) {
+				me.setFields(userData)
+				return me
+			})
 	},
 	
 	/**
 	 * Updates the current object in the database with new data.
-	 * @param {String} collection the collection name
 	 * @param {String} id the ID for the object being updated
 	 * @param {Object} newData the fields to be updated, with their values
-	 * @param {Function} callback (optional) a function to be called when the operation is done.
 	 * Receives as argument all the object fields, after updated.
 	 */
-	update: function(collection, id, newData, callback) {
+	updateData: function(id, newData) {
 		var _newData = _(newData)
 		
 		if (_newData.has('$push') || _newData.has('$unset') || _newData.has('$set'))
@@ -170,11 +198,29 @@ module.exports = {
 		else
 			newData = { $set: newData, id: id }
 			
-		this.makeRequest(collection, this.REQUEST.UPDATE, newData, {}, callback)
+		return this.makeRequest(this.COLLECTION, this.REQUEST.UPDATE, newData, {})
 	},
 	
-	remove: function(collection, id, callback) {
-		this.makeRequest(collection, this.REQUEST.DELETE, {id: id}, {}, callback)
+	update: function() {
+		var me = this
+		return this.updateData(this.id, this)
+			.then(function(userData) {
+				me.setFields(userData)
+				return me
+			})
+	},
+	
+	remove: function(idOrQuery) {
+		if (_.isString(idOrQuery)) {
+			return this.makeRequest(this.COLLECTION, this.REQUEST.DELETE, { id: idOrQuery }, {})	
+		}
+		else if (_.isObject(idOrQuery)) {
+			//to remove multiple entries, we have to send an empty LIST with PUT (not empty object)
+			return this.makeRequest(this.COLLECTION, this.REQUEST.REPLACE, [], { q: idOrQuery })
+		}
+		else {
+			return new Error('Argument idOrQuery of Model.remove should be a string or query object, given: '+JSON.stringify(idOrQuery))
+		}
 	},
 	
 	
@@ -223,7 +269,6 @@ module.exports = {
 	 * @requires {@link Models.Model#_URL Requires \_URL}
 	 * @private
 	 * 
-	 * @param {String} collection the collection name
 	 * @param {String} id (optional) the id to be used when the request is related to only one object
 	 * @param {Object} queryString (optional) all parameters for the queryString
 	 * @return {String} the complete URL, ready for a request
@@ -250,7 +295,7 @@ module.exports = {
 	},
 	
 	/**
-	 * Creates a generic request.
+	 * Creates a generic request and returns a promise for its response.
 	 * @private
 	 * 
 	 * @param {String} collection name of the collection (table) to operate on
@@ -260,58 +305,12 @@ module.exports = {
 	 * to perform finds, updates, replaces and deletes, and it has higher precedence than the 
 	 * queryString.query.id (aka queryString.query.id will be replaced if data.id is present)
 	 * @param {Object} queryString (optional) additional query string arguments, organized in a hash
-	 * @param {Function} callback (optional) called when the request is successful.
-	 * Receives as argument the object returned by the request
 	 */
-	makeRequest: function(collection, requestType, data, queryString, callback) {
+	makeRequest: function(collection, requestType, data, queryString) {
 		if (!_.contains(this.REQUEST, requestType))
 			throw { name: 'ArgumentError', message: 'request should be one of the Model.request constants.' }
 		
-		var that = this,
-			withLoading = false
-		var response, request = Ti.Network.createHTTPClient({
-			timeout: this.TIMEOUT,
-			autoEncodeUrl: false, //TODO is this really needed?
-			onload: function(source) {
-				response = JSON.parse(this.responseText)
-				if (response === null) response = {}
-				Ti.API.info("Response was ["+typeof response+']: '+JSON.stringify(response))
-				
-				that.removeLoading()
-				
-				if (_.contains([200, 201], this.status)) {
-                    if (_.isFunction(callback)) callback(response)
-                }				    
-		        else {
-					Ti.API.error(error.error)
-					throw { name: 'RequestError', message: '['+this.status+'] '+this.statusText+': ' }
-				}
-			},
-			
-			onerror: function(error) {
-				that.removeLoading()
-				alert(L('unavailable'))
-				Ti.API.error('MONGO ANSWERED ERROR '+this.status+': '+this.statusText)
-			}//,
-			
-		/*
-		 * FIXME: Not working,  Ti.Network.HTTPClient.* are all undefined. Probably fixed in a
-		 * newer SDK. Check back and remove the other calls to add/removeLoading()
-			onreadystatechange: function() {
-				switch (this.readyState) {
-					case Ti.Network.HTTPClient.UNSENT:
-					case Ti.Network.HTTPClient.OPENED:
-						that.addLoading()
-					break
-					
-					case Ti.Network.HTTPClient.DONE:
-						that.removeLoading()
-					break
-				}
-			}
-	   	*/
-		})
-		
+		// ~~~~~~~~~~~~~~~~~~~~~~~~ setting the request verb ~~~~~~~~~~~~~~~~~~~~~~~~
 		var verb
 		switch (requestType) {
 			case this.REQUEST.INSERT:	verb = 'POST';   break
@@ -321,6 +320,7 @@ module.exports = {
 			case this.REQUEST.DELETE:	verb = 'DELETE'; break	
 		}
 		
+		// ~~~~~~~~~~~~~~~~~~~~~~~~ setting the request query ~~~~~~~~~~~~~~~~~~~~~~~~
 		var useId = null
 		if (_.has(data, 'id')) {
 			if (_.isEmpty(queryString)) {
@@ -328,27 +328,86 @@ module.exports = {
 				data = _.omit(data, 'id')
 			}
 			else {
+				if (!_.isObject(queryString)) queryString = {}
 				queryString.q = _.extend(queryString.q || {}, { _id: data.id })
 			}
 		}
-		dataString = (_.isEmpty(data))? '' : JSON.stringify(data)
+		//empty objects are never needed by the API, but empty lists can be useful
+		dataString = (!_.isArray(data) && _.isEmpty(data))? '' : JSON.stringify(data)
 		
-		Ti.API.info('MONGO ['+verb+']: '+this.mountUrl(collection, useId, queryString))
-		if (verb != 'GET') Ti.API.info('Data sent: '+dataString)
-		
-		request.open(verb, this.mountUrl(collection, useId, queryString))
-		
+		// ~~~~~~~~~~~~~~~~~~~~~~~ setting the request headers ~~~~~~~~~~~~~~~~~~~~~~~
 		var headers = {
 			'X-Requested-With': null, //cleaning useless default header
 			'Content-Type': 'application/json;charset=utf-8'
 		}
-		_.each(headers, function(value, title) { request.setRequestHeader(title, value) })
+		
+		// ~~~~~~~~~~~~~~~~~~~~~~ setting up the actual request ~~~~~~~~~~~~~~~~~~~~~~
+		var that = this,
+			withLoading = false,
+			deferred = Q.defer(),
+			response,
+			request = Ti.Network.createHTTPClient({
+				timeout: this.TIMEOUT,
+				//autoEncodeUrl: false, //TODO is this really needed?
+				onload: function(source) {
+					response = JSON.parse(this.responseText)
+					if (response === null) response = {}
+					//TODO change to info again
+					Ti.API.info("Response was ["+typeof response+']: '+JSON.stringify(response))
+					
+					that.removeLoading()
+					
+					if (_.contains([200, 201], this.status)) {
+	                    deferred.resolve(response)
+	                }				    
+			        else {
+						Ti.API.error(response)
+						deferred.reject(new Error('['+this.status+'] '+this.statusText+': '+response))
+					}
+				},
+				
+				onerror: function(error) {
+					that.removeLoading()
+					alert(L('unavailable'))
+					Ti.API.error('MONGO ANSWERED ERROR '+this.status+': '+this.statusText)
+					deferred.reject('['+this.status+'] '+this.statusText)
+				}//,
+				
+				/*
+				 * FIXME: Not working,  Ti.Network.HTTPClient.* are all undefined. Probably fixed in a
+				 * newer SDK. Check back and remove the other calls to add/removeLoading()
+				 * TODO: when this is done we should also include deferred.notify()
+					onreadystatechange: function() {
+						switch (this.readyState) {
+							case Ti.Network.HTTPClient.UNSENT:
+							case Ti.Network.HTTPClient.OPENED:
+								that.addLoading()
+							break
+							
+							case Ti.Network.HTTPClient.DONE:
+								that.removeLoading()
+							break
+						}
+					}
+			   	*/
+			})
+			
+		
+		//TODO change to info again
+		Ti.API.info('MONGO ['+verb+']: '+this.mountUrl(collection, useId, queryString))
+		if (verb != 'GET' && verb != 'DELETE') Ti.API.info('Data sent: '+dataString)
+		
+		request.open(verb, this.mountUrl(collection, useId, queryString))
 
+		_.each(headers, function(value, title) { request.setRequestHeader(title, value) })
+		
 		//a better place for this would be inside the onReadyStateChange callback method, but take a look
-		//at the comment there... :(
+		//at the FIXME comment there... :(
 		this.addLoading()
 		
 		request.send(dataString)
+		
+		return deferred.promise
 	},
 	
 	/**
