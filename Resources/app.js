@@ -1,8 +1,8 @@
-/*
- * TODO: this is only a placeholder until we can securely assure the user has already logged in before
- */
-var hasUserCredentials = Ti.App.Properties.hasProperty('userId'),
-	initialWindow = 'ui/common/windows/'+((hasUserCredentials)? 'main/lists' : 'initial/login'),
-	win = new require(initialWindow)()
-	
-win.open()
+// currently there's no way to change the --deploy-type option through the IDE, so it should be done manually
+//var deployType = Ti.App.deployType 
+deployType = 'test'
+
+if (deployType == 'test')
+	require('start_tests')()
+else
+	require('start')()
