@@ -284,6 +284,8 @@ module.exports = {
 		    _.each(queryString, function(data, key) {
 		    	if (typeof data == 'object' && _.keys(data).length == 0) return
 		    	else {
+		    		//TODO: this is not handling regular expressions correctly: JSON.stringify returns {}
+		    		//for RegExp objects. They should be recursively filtered and handled separately 
 					var encodedData = encodeURIComponent((key == 'q')? JSON.stringify(data) : data)        
 		        	qsParts.push(key+'='+encodedData)
 		        }
@@ -320,7 +322,7 @@ module.exports = {
 			case this.REQUEST.DELETE:	verb = 'DELETE'; break	
 		}
 		
-		// ~~~~~~~~~~~~~~~~~~~~~~~~ setting the request query ~~~~~~~~~~~~~~~~~~~~~~~~
+		// ~~~~~~~~~~~~~~~~~~~~~ setting request query and data ~~~~~~~~~~~~~~~~~~~~~
 		var useId = null
 		if (_.has(data, 'id')) {
 			if (_.isEmpty(queryString)) {

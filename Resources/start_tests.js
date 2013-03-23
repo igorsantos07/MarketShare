@@ -6,7 +6,8 @@ module.exports = function() {
 	Ti.include('lib/jasmine/consoleReporter.js')
 	
 	var tests = [
-		'models/User'
+		'models/User',
+		'models/Group'
 	]
 	
 	tests.forEach(function(test) { Ti.include('tests/'+test+'.js') })
