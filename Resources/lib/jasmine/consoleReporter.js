@@ -54,10 +54,10 @@
 					item = results.items_[i] 
 					if (!item.passed_) {
 						this.log('    (' + (i+1) + ') ' + item.message);
-						if (item.expected)
-							this.log('    >> Expected: "' + item.expected);
-						if (item.expected)
-							this.log('    >> Result: "' + item.actual);
+//						if (item.expected)
+//							this.log('    >> Expected: "' + item.expected);
+//						if (item.expected)
+//							this.log('    >> Result: "' + item.actual);
 					}
 					else {
 						if (this.verbose)
