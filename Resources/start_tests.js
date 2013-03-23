@@ -7,7 +7,8 @@ module.exports = function() {
 	
 	var tests = [
 		'models/User',
-		'models/Group'
+		'models/Group',
+		'models/List'
 	]
 	
 	tests.forEach(function(test) { Ti.include('tests/'+test+'.js') })
